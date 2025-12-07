@@ -119,7 +119,7 @@ export default function Home() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'search' | 'filter'>('search');
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [detailTab, setDetailTab] = useState<'info' | 'org' | 'person'>('info');
+  const [detailTab, setDetailTab] = useState<'info' | 'org' | 'person' | 'script'>('info');
   const [selectedFilters, setSelectedFilters] = useState<string[]>(['industry', 'revenue', 'service']);
   const [expandedFilter, setExpandedFilter] = useState<string | null>(null);
   const [filterSelections, setFilterSelections] = useState<Record<string, string[]>>({});
@@ -624,16 +624,8 @@ export default function Home() {
             
             {/* ① ヘッダーセクション */}
             <div className="relative p-6 border-b border-cyan-500/30">
-              {/* 閉じるボタン */}
-              <button 
-                onClick={() => setSelectedCompany(null)} 
-                className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-cyan-500/20 rounded-xl border border-white/10 hover:border-cyan-500/50 transition-all"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
-              
               {/* 企業名 */}
-              <h2 className="text-2xl font-black text-white mb-4 pr-12 leading-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">{selectedCompany.name}</h2>
+              <h2 className="text-2xl font-black text-white mb-4 leading-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">{selectedCompany.name}</h2>
               
               {/* タグ */}
               <div className="flex gap-2">
@@ -641,6 +633,14 @@ export default function Home() {
                 <span className="px-4 py-1.5 text-xs font-bold text-cyan-300 bg-cyan-500/15 border border-cyan-400/40 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.2)]">{selectedCompany.prefecture.replace('都', '').replace('府', '').replace('県', '')}</span>
               </div>
             </div>
+            
+            {/* 閉じるボタン - 右上固定 */}
+            <button 
+              onClick={() => setSelectedCompany(null)} 
+              className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center text-white/50 hover:text-white bg-black/50 hover:bg-cyan-500/30 rounded-lg border border-white/20 hover:border-cyan-500/50 transition-all z-20"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
 
             {/* ② タブナビゲーション */}
             <div className="flex border-b border-cyan-500/30 bg-black/30">
@@ -648,110 +648,237 @@ export default function Home() {
                 { id: 'info', label: '企業情報' },
                 { id: 'org', label: '組織図' },
                 { id: 'person', label: '人物情報' },
+                { id: 'script', label: 'SCRIPT' },
               ].map(tab => (
                 <button 
                   key={tab.id}
-                  onClick={() => setDetailTab(tab.id as 'info' | 'org' | 'person')} 
-                  className={`flex-1 py-4 text-sm font-bold transition-all relative ${
+                  onClick={() => setDetailTab(tab.id as 'info' | 'org' | 'person' | 'script')} 
+                  className={`flex-1 py-5 text-sm font-bold transition-all ${
                     detailTab === tab.id 
                       ? 'text-cyan-400' 
                       : 'text-white/40 hover:text-white/70'
                   }`}
                 >
                   {tab.label}
-                  {detailTab === tab.id && (
-                    <div className="absolute bottom-0 left-2 right-2 h-[3px] bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full shadow-[0_0_15px_rgba(6,182,212,1)]" />
-                  )}
                 </button>
               ))}
             </div>
 
             {/* ③ コンテンツエリア */}
-            <div className="flex-1 overflow-y-auto p-5">
-              {/* 企業情報タブ */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* 企業情報タブ - サイバーパンク */}
               {detailTab === 'info' && (
-                <div className="p-4 rounded-xl bg-[#08080c] border border-cyan-500/20">
-                  {[
-                    { label: '業種', value: selectedCompany.industry },
-                    { label: 'サービス', value: selectedCompany.service },
-                    { label: '売上', value: selectedCompany.revenue },
-                    { label: '従業員数', value: selectedCompany.employees },
-                    { label: '設立', value: selectedCompany.founded },
-                    { label: '資本金', value: selectedCompany.capital },
-                    { label: '所在地', value: selectedCompany.address },
-                    { label: 'HP', value: selectedCompany.website, isLink: true },
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex items-start py-3 border-b border-cyan-500/10 last:border-0">
-                      <div className="w-24 flex-shrink-0 text-sm text-cyan-400 font-bold">{item.label}:</div>
-                      <div className="flex-1 text-sm text-white/80">
-                        {item.isLink ? (
-                          <a href={`https://${item.value}`} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 transition-colors">
-                            {item.value}
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                          </a>
-                        ) : item.value}
+                <div className="space-y-4">
+                  {/* メイン情報カード */}
+                  <div className="relative rounded-2xl bg-[#05050a] border-2 border-cyan-500/40 overflow-hidden">
+                    {/* 上部グラデーションライン */}
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500" />
+                    
+                    {/* セクションヘッダー */}
+                    <div className="px-5 py-4 border-b border-cyan-500/20 bg-gradient-to-r from-cyan-500/5 to-transparent">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/30 to-purple-500/30 flex items-center justify-center border border-cyan-500/40">
+                          <span className="text-xl">📊</span>
+                        </div>
+                        <div>
+                          <span className="text-base font-black text-white">COMPANY DATA</span>
+                          <span className="text-[10px] text-cyan-400/60 font-mono block tracking-wider">企業情報</span>
+                        </div>
                       </div>
                     </div>
-                  ))}
+                    
+                    {/* データリスト */}
+                    <div className="p-4">
+                      {[
+                        { label: '業種', value: selectedCompany.industry, icon: '🏢' },
+                        { label: 'サービス', value: selectedCompany.service, icon: '💼' },
+                        { label: '売上', value: selectedCompany.revenue, icon: '💰' },
+                        { label: '従業員数', value: selectedCompany.employees, icon: '👥' },
+                        { label: '設立', value: selectedCompany.founded, icon: '📅' },
+                        { label: '資本金', value: selectedCompany.capital, icon: '🏦' },
+                      ].map((item, idx) => (
+                        <div 
+                          key={idx} 
+                          className="group flex items-center gap-4 py-4 border-b border-cyan-500/10 last:border-0 hover:bg-cyan-500/5 px-3 -mx-3 rounded-lg transition-all"
+                        >
+                          <div className="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20 group-hover:border-cyan-400/50 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.2)] transition-all">
+                            <span className="text-lg">{item.icon}</span>
+                          </div>
+                          <div className="flex-1">
+                            <span className="text-[10px] text-cyan-400/60 font-mono block mb-0.5 tracking-wider">{item.label.toUpperCase()}</span>
+                            <span className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">{item.value}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* 所在地カード */}
+                  <div className="relative rounded-2xl bg-[#05050a] border-2 border-cyan-500/40 p-5 overflow-hidden group hover:border-cyan-400/60 transition-all">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyan-400 to-purple-500 opacity-0 group-hover:opacity-100 transition-all" />
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500/30 to-orange-500/30 flex items-center justify-center border border-rose-500/40 group-hover:shadow-[0_0_20px_rgba(244,63,94,0.3)] transition-all">
+                        <span className="text-2xl">📍</span>
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-[10px] text-rose-400/60 font-mono block mb-1 tracking-wider">LOCATION</span>
+                        <span className="text-lg font-bold text-white">{selectedCompany.address}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Webサイトカード */}
+                  <a 
+                    href={`https://${selectedCompany.website}`} 
+            target="_blank"
+            rel="noopener noreferrer"
+                    className="relative block rounded-2xl bg-[#05050a] border-2 border-cyan-500/40 p-5 overflow-hidden group hover:border-cyan-400/60 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)] transition-all"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyan-400 to-purple-500 opacity-0 group-hover:opacity-100 transition-all" />
+                    <div className="relative flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/30 to-blue-500/30 flex items-center justify-center border border-cyan-500/40 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
+                        <span className="text-2xl">🌐</span>
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-[10px] text-cyan-400/60 font-mono block mb-1 tracking-wider">WEBSITE</span>
+                        <span className="text-lg font-bold text-cyan-400 group-hover:text-cyan-300 transition-colors">{selectedCompany.website}</span>
+                      </div>
+                      <div className="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30 group-hover:bg-cyan-500/30 group-hover:border-cyan-400 transition-all">
+                        <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                      </div>
+                    </div>
+                  </a>
+
+                  {/* Scale Insight - AIサマリーセクション */}
+                <div className="relative group rounded-2xl bg-gradient-to-br from-[#0a0a15] to-[#05050a] border-2 border-purple-500/40 overflow-hidden hover:border-purple-400/70 transition-all duration-300">
+                  {/* 上部グラデーションライン */}
+                  <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500" />
+                  
+                  {/* ヘッダー */}
+                  <div className="p-5 border-b border-purple-500/30">
+                    <div className="flex items-center gap-3">
+                      {/* シグナルくんアイコン */}
+                      <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-500 shadow-[0_0_20px_rgba(6,182,212,0.5)] flex items-center justify-center border-2 border-white/30">
+                        {/* 顔 */}
+                        <div className="relative">
+                          {/* 目 */}
+                          <div className="flex gap-1.5 mb-0.5">
+                            <div className="w-2 h-2 bg-white rounded-full relative">
+                              <div className="absolute w-1 h-1 bg-black rounded-full top-0.5 left-0.5" />
+                            </div>
+                            <div className="w-2 h-2 bg-white rounded-full relative">
+                              <div className="absolute w-1 h-1 bg-black rounded-full top-0.5 left-0.5" />
+                            </div>
+                          </div>
+                          {/* 口 */}
+                          <div className="w-2.5 mx-auto h-1 border-b-2 border-white rounded-full" />
+                        </div>
+                        {/* アンテナ */}
+                        <div className="absolute -top-2 left-1/2 -translate-x-1/2">
+                          <div className="w-0.5 h-2 bg-gradient-to-t from-purple-500 to-cyan-400" />
+                          <div className="w-2 h-2 rounded-full bg-cyan-400 -mt-0.5 -ml-0.5 shadow-[0_0_8px_rgba(6,182,212,1)]" />
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-sm text-purple-400 font-bold tracking-wider">SCALE INSIGHT</span>
+                        <span className="text-[10px] text-white/30 ml-2">powered by SCALEHACK AI</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* サマリーコンテンツ */}
+                  <div className="p-5">
+                    <p className="text-white/80 text-sm leading-relaxed">
+                      {selectedCompany.name}は、{selectedCompany.industry}分野で事業を展開する企業です。
+                      従業員数{selectedCompany.employees}名規模で、{selectedCompany.prefecture}に本社を構えています。
+                      主力サービスは{selectedCompany.service}であり、{selectedCompany.revenue}の売上規模を持つ成長企業です。
+                      デジタルトランスフォーメーション推進に積極的で、新規サービス導入への関心が高い傾向があります。
+                    </p>
+                    
+                    {/* AIタグ */}
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      <span className="px-3 py-1 text-[10px] font-bold text-purple-300 bg-purple-500/20 border border-purple-500/40 rounded-full">DX推進中</span>
+                      <span className="px-3 py-1 text-[10px] font-bold text-cyan-300 bg-cyan-500/20 border border-cyan-500/40 rounded-full">成長企業</span>
+                      <span className="px-3 py-1 text-[10px] font-bold text-pink-300 bg-pink-500/20 border border-pink-500/40 rounded-full">新規導入意欲高</span>
+                    </div>
+                  </div>
+                  
+                  {/* フッター */}
+                  <div className="px-5 py-3 bg-purple-500/10 border-t border-purple-500/20 flex items-center justify-between">
+                    <span className="text-[10px] text-white/30 font-mono">Last updated: 2024/12/07</span>
+                    <div className="flex items-center gap-1 text-purple-400">
+                      <span className="text-[10px] font-mono">AI Confidence:</span>
+                      <span className="text-xs font-bold">92%</span>
+                    </div>
+                  </div>
+                </div>
                 </div>
               )}
 
               {/* 組織図タブ - サイバーパンク */}
               {detailTab === 'org' && (
-                <div className="space-y-5">
+                <div className="space-y-4">
                   {/* 検索ボックス */}
-                  <div className="relative group">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-xl opacity-0 group-focus-within:opacity-30 blur transition-all" />
+                  <div className="relative mb-2">
                     <input 
                       type="text" 
                       placeholder="部署名で検索..." 
-                      className="relative w-full bg-[#05050a] border-2 border-cyan-500/40 rounded-xl px-5 py-4 pl-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_25px_rgba(6,182,212,0.3)] transition-all"
+                      className="w-full bg-[#08080f] border-2 border-cyan-500/30 rounded-xl py-4 pl-5 pr-12 text-sm text-white placeholder-white/40 focus:outline-none focus:border-cyan-400 transition-all"
                     />
-                    <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    <svg className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400 pointer-events-none" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                   </div>
                   
-                  {/* 部署カード */}
+                  {/* 部署カードリスト */}
                   {selectedCompany.departments.map((dept, idx) => (
                     <div 
                       key={idx} 
-                      className="relative group bg-[#05050a] rounded-2xl p-6 border-2 border-cyan-500/30 hover:border-cyan-400/70 transition-all duration-300 overflow-hidden"
-                      style={{ animationDelay: `${idx * 100}ms` }}
+                      className="relative rounded-2xl bg-[#05050a] border-2 border-cyan-500/40 overflow-hidden group hover:border-cyan-400/70 hover:shadow-[0_0_25px_rgba(6,182,212,0.15)] transition-all"
                     >
-                      {/* 背景グロー */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      {/* 上部グラデーションライン */}
+                      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500" />
                       
-                      {/* 左側のネオンバー */}
-                      <div className="absolute left-0 top-4 bottom-4 w-1 bg-gradient-to-b from-cyan-400 via-purple-500 to-cyan-400 rounded-full opacity-0 group-hover:opacity-100 shadow-[0_0_15px_rgba(6,182,212,0.8)] transition-all" />
-                      
-                      {/* 部署名 */}
-                      <div className="relative flex items-center gap-4 mb-5">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center border-2 border-cyan-500/40 group-hover:border-cyan-400 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
-                          <span className="text-2xl">🏢</span>
-                        </div>
-                        <div>
-                          <span className="text-lg font-black text-white group-hover:text-cyan-400 transition-colors block">{dept.name}</span>
-                          <span className="text-[10px] text-cyan-500/50 font-mono tracking-wider">DEPARTMENT</span>
+                      {/* ヘッダー */}
+                      <div className="px-5 py-4 border-b border-cyan-500/20 bg-gradient-to-r from-cyan-500/5 to-transparent">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/30 to-purple-500/30 flex items-center justify-center border border-cyan-500/40 group-hover:border-cyan-400 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
+                            <span className="text-2xl">🏢</span>
+                          </div>
+                          <div>
+                            <span className="text-lg font-black text-white group-hover:text-cyan-400 transition-colors block">{dept.name}</span>
+                            <span className="text-[10px] text-cyan-400/60 font-mono tracking-wider">DEPARTMENT</span>
+                          </div>
                         </div>
                       </div>
                       
-                      {/* 電話番号 */}
-                      <div className="relative flex items-center gap-4 mb-4 p-4 rounded-xl bg-[#08080f] border border-cyan-500/20 group-hover:border-cyan-500/40 transition-all">
-                        <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-500/40">
-                          <span className="text-emerald-400 text-lg">📞</span>
+                      {/* コンテンツ */}
+                      <div className="p-4 space-y-3">
+                        {/* 電話番号 */}
+                        <div className="p-4 rounded-xl bg-[#08080f] border border-emerald-500/20 group-hover:border-emerald-500/40 transition-all">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-500/40 flex-shrink-0">
+                              <span className="text-emerald-400 text-lg">📞</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <span className="text-[10px] text-emerald-400/60 font-mono block mb-0.5 tracking-wider">TEL</span>
+                              <span className="font-mono text-lg font-bold text-white tracking-wider">{dept.phone}</span>
+                            </div>
+                            <button className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/40 hover:bg-emerald-500/30 transition-all flex-shrink-0">
+                              COPY
+                            </button>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-[10px] text-emerald-400/60 font-mono block mb-1">TEL</span>
-                          <span className="font-mono text-xl font-bold text-white tracking-wider">{dept.phone}</span>
+                        
+                        {/* 所在地 */}
+                        <div className="flex items-center gap-4 p-3 rounded-xl bg-[#08080f] border border-rose-500/20">
+                          <div className="w-8 h-8 rounded-lg bg-rose-500/20 flex items-center justify-center border border-rose-500/40">
+                            <span className="text-rose-400">📍</span>
+                          </div>
+                          <div className="flex-1">
+                            <span className="text-[10px] text-rose-400/60 font-mono block mb-0.5 tracking-wider">LOCATION</span>
+                            <span className="text-sm text-white/80">{dept.address}</span>
+                          </div>
                         </div>
-                        <button className="ml-auto px-4 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/40 hover:bg-emerald-500/30 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all">
-                          COPY
-                        </button>
-                      </div>
-                      
-                      {/* 所在地 */}
-                      <div className="relative flex items-center gap-4 p-3 rounded-lg bg-[#08080f]/50">
-                        <span className="text-rose-400 text-lg">📍</span>
-                        <span className="text-sm text-white/60">{dept.address}</span>
                       </div>
                     </div>
                   ))}
@@ -767,9 +894,9 @@ export default function Home() {
                     <input 
                       type="text" 
                       placeholder="氏名や役職で検索..." 
-                      className="relative w-full bg-[#05050a] border-2 border-purple-500/40 rounded-xl px-5 py-4 pl-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-purple-400 focus:shadow-[0_0_25px_rgba(168,85,247,0.3)] transition-all"
+                      className="relative w-full bg-[#05050a] border-2 border-purple-500/40 rounded-xl pl-4 pr-12 py-4 text-sm text-white placeholder-white/30 focus:outline-none focus:border-purple-400 focus:shadow-[0_0_25px_rgba(168,85,247,0.3)] transition-all"
                     />
-                    <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400 pointer-events-none" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                   </div>
                   
                   {/* 人物カード */}
@@ -832,6 +959,168 @@ export default function Home() {
                       </div>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* SCRIPTタブ - サイバーパンク */}
+              {detailTab === 'script' && (
+                <div className="space-y-5">
+                  {/* ステータスカード */}
+                  <div className="relative rounded-2xl bg-[#05050a] border-2 border-emerald-500/40 overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-emerald-400 via-cyan-500 to-emerald-400" />
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/40">
+                          <span className="text-xl">📊</span>
+                        </div>
+                        <span className="text-xs text-emerald-400 font-mono tracking-widest">STATUS</span>
+                      </div>
+                      <div className="flex gap-3">
+                        <span className={`px-4 py-2 rounded-xl text-sm font-bold border-2 ${
+                          selectedCompany.status === 'called' 
+                            ? 'bg-emerald-500/20 text-emerald-400 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]' 
+                            : 'bg-white/5 text-white/30 border-white/10'
+                        }`}>CALL済</span>
+                        <span className={`px-4 py-2 rounded-xl text-sm font-bold border-2 ${
+                          selectedCompany.status === 'not_approached' 
+                            ? 'bg-slate-500/20 text-slate-300 border-slate-400 shadow-[0_0_15px_rgba(148,163,184,0.3)]' 
+                            : 'bg-white/5 text-white/30 border-white/10'
+                        }`}>未アプローチ</span>
+                        <span className={`px-4 py-2 rounded-xl text-sm font-bold border-2 ${
+                          selectedCompany.status === 'unavailable' 
+                            ? 'bg-rose-500/20 text-rose-400 border-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.3)]' 
+                            : 'bg-white/5 text-white/30 border-white/10'
+                        }`}>不可</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ネクストアクションカード */}
+                  <div className="relative rounded-2xl bg-[#05050a] border-2 border-orange-500/40 overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-400 via-yellow-500 to-orange-400" />
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center border border-orange-500/40">
+                          <span className="text-xl">🎯</span>
+                        </div>
+                        <span className="text-xs text-orange-400 font-mono tracking-widest">NEXT ACTION</span>
+                      </div>
+                      <div className="flex gap-3">
+                        <span className={`px-4 py-2 rounded-xl text-sm font-bold border-2 ${
+                          selectedCompany.nextAction === 'call' 
+                            ? 'bg-cyan-500/20 text-cyan-400 border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.3)]' 
+                            : 'bg-white/5 text-white/30 border-white/10'
+                        }`}>CALL</span>
+                        <span className={`px-4 py-2 rounded-xl text-sm font-bold border-2 ${
+                          selectedCompany.nextAction === 'recall' 
+                            ? 'bg-orange-500/20 text-orange-400 border-orange-400 shadow-[0_0_15px_rgba(249,115,22,0.3)]' 
+                            : 'bg-white/5 text-white/30 border-white/10'
+                        }`}>再CALL</span>
+                        <span className={`px-4 py-2 rounded-xl text-sm font-bold border-2 ${
+                          selectedCompany.nextAction === 'done' 
+                            ? 'bg-emerald-500/20 text-emerald-400 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]' 
+                            : 'bg-white/5 text-white/30 border-white/10'
+                        }`}>完了</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SCALE SCRIPTカード */}
+                  <div className="relative rounded-2xl bg-gradient-to-br from-[#0a0a15] to-[#05050a] border-2 border-purple-500/40 overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500" />
+                    
+                    {/* ヘッダー */}
+                    <div className="p-5 border-b border-purple-500/30">
+                      <div className="flex items-center gap-3">
+                        {/* シグナルくんアイコン */}
+                        <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-500 shadow-[0_0_20px_rgba(6,182,212,0.5)] flex items-center justify-center border-2 border-white/30">
+                          <div className="relative">
+                            <div className="flex gap-1.5 mb-0.5">
+                              <div className="w-2 h-2 bg-white rounded-full relative">
+                                <div className="absolute w-1 h-1 bg-black rounded-full top-0.5 left-0.5" />
+                              </div>
+                              <div className="w-2 h-2 bg-white rounded-full relative">
+                                <div className="absolute w-1 h-1 bg-black rounded-full top-0.5 left-0.5" />
+                              </div>
+                            </div>
+                            <div className="w-2.5 mx-auto h-1 border-b-2 border-white rounded-full" />
+                          </div>
+                          <div className="absolute -top-2 left-1/2 -translate-x-1/2">
+                            <div className="w-0.5 h-2 bg-gradient-to-t from-purple-500 to-cyan-400" />
+                            <div className="w-2 h-2 rounded-full bg-cyan-400 -mt-0.5 -ml-0.5 shadow-[0_0_8px_rgba(6,182,212,1)]" />
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-sm text-purple-400 font-bold tracking-wider">SCALE SCRIPT</span>
+                          <span className="text-[10px] text-white/30 ml-2">powered by SCALEHACK AI</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* スクリプトコンテンツ */}
+                    <div className="p-5 space-y-4">
+                      {/* 導入トーク */}
+                      <div className="p-4 rounded-xl bg-[#08080f] border border-cyan-500/30">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-cyan-400">💬</span>
+                          <span className="text-xs text-cyan-400 font-mono tracking-wider">INTRODUCTION</span>
+                        </div>
+                        <p className="text-white/80 text-sm leading-relaxed">
+                          「お世話になっております。株式会社Scalehackの〇〇と申します。{selectedCompany.name}様の新規事業の開拓について、現在無償でインテントセールスのSaaSサービスを100社様限定でご提供させていただいている背景でご連絡いたしました。」
+                        </p>
+                      </div>
+                      
+                      {/* 質問リスト */}
+                      <div className="p-4 rounded-xl bg-[#08080f] border border-purple-500/30">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-purple-400">❓</span>
+                          <span className="text-xs text-purple-400 font-mono tracking-wider">QUESTION LIST</span>
+                        </div>
+                        <ul className="space-y-3 text-white/80 text-sm">
+                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-purple-500/10 transition-colors">
+                            <span className="text-cyan-400 font-bold">Q1.</span>
+                            <span>{selectedCompany.keyPersons[0]?.name}様は現在、営業部門の責任者として営業戦略や新規開拓を担われている認識でお間違いないでしょうか？</span>
+                          </li>
+                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-purple-500/10 transition-colors">
+                            <span className="text-cyan-400 font-bold">Q2.</span>
+                            <span>現在、営業人材は充足されていますか？それとも不足を感じていらっしゃいますか？</span>
+                          </li>
+                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-purple-500/10 transition-colors">
+                            <span className="text-cyan-400 font-bold">Q3.</span>
+                            <span>インサイドセールスは現在行われていますか？</span>
+                          </li>
+                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-purple-500/10 transition-colors">
+                            <span className="text-cyan-400 font-bold">Q4.</span>
+                            <span>現在ご利用中の営業支援ツールなどはございますか？</span>
+                          </li>
+                          <li className="flex items-start gap-3 p-2 rounded-lg hover:bg-purple-500/10 transition-colors">
+                            <span className="text-cyan-400 font-bold">Q5.</span>
+                            <span>どのようなことができる場合に、もう少しお話を聞いてみたいと思われますか？</span>
+                          </li>
+                        </ul>
+                      </div>
+                      
+                      {/* クロージング */}
+                      <div className="p-4 rounded-xl bg-[#08080f] border border-pink-500/30">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-pink-400">🤝</span>
+                          <span className="text-xs text-pink-400 font-mono tracking-wider">CLOSING</span>
+                        </div>
+                        <p className="text-white/80 text-sm leading-relaxed">
+                          「もしよろしければ、必ずお役に立てるご提案をお持ちしますので、15分程度のお時間を来週か再来週でいただくことはできますでしょうか？」
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* フッター */}
+                    <div className="px-5 py-3 bg-purple-500/10 border-t border-purple-500/20 flex items-center justify-between">
+                      <span className="text-[10px] text-white/30 font-mono">Generated by SCALEHACK AI</span>
+                      <div className="flex items-center gap-1 text-purple-400">
+                        <span className="text-[10px] font-mono">Success Rate:</span>
+                        <span className="text-xs font-bold">87%</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
