@@ -518,7 +518,7 @@ export default function Home() {
       </aside>
 
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col overflow-hidden relative transition-all p-3 ${selectedCompany ? 'mr-[800px]' : ''}`}>
+      <div className={`flex-1 flex flex-col overflow-hidden relative transition-all p-3 ${selectedCompany ? 'mr-[850px]' : ''}`}>
         {/* Header Bar - シアン枠線 */}
         <div className="mb-4 px-6 py-4 rounded-xl border-2 border-cyan-500/50 backdrop-blur-xl bg-black/40 flex items-center justify-between gap-6 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
           <div className="flex items-baseline gap-2">
@@ -614,33 +614,63 @@ export default function Home() {
       </div>
 
 
-      {/* Detail Panel */}
+      {/* Detail Panel - ゴリゴリサイバーパンク */}
       {selectedCompany && (
-        <div className="fixed right-0 top-0 h-full w-[800px] bg-[#0d0d12] border-l border-white/10 flex flex-col z-50 shadow-2xl">
-          <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-cyan-500/50 via-purple-500/50 to-pink-500/50" />
-          
-          <div className="p-6 border-b border-white/10">
-            <div className="flex items-start justify-between mb-5">
-              <div className="flex-1 pr-4">
-                <h2 className="text-2xl font-black bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent mb-2">{selectedCompany.name}</h2>
-                <p className="text-sm text-white/40">{selectedCompany.industry} ・ {selectedCompany.prefecture}</p>
-              </div>
-              <button onClick={() => setSelectedCompany(null)} className="p-2.5 hover:bg-white/10 rounded-xl border border-white/10 transition-all group">
-                <svg className="w-5 h-5 text-white/40 group-hover:text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        <div className="fixed right-0 top-0 bottom-0 w-[850px] flex flex-col z-50 animate-[slideInRight_0.3s_ease-out]">
+          {/* ネオン枠線コンテナ */}
+          <div className="relative flex-1 flex flex-col bg-[#0a0a10] border-l-2 border-cyan-500/50 overflow-hidden shadow-[0_0_40px_rgba(6,182,212,0.2)]">
+            {/* 左側ネオンライン */}
+            <div className="absolute top-0 left-0 w-[3px] h-full bg-gradient-to-b from-cyan-400 via-purple-500 to-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.8)]" />
+            
+            {/* ① ヘッダーセクション */}
+            <div className="relative p-6 border-b border-cyan-500/30">
+              {/* 閉じるボタン */}
+              <button 
+                onClick={() => setSelectedCompany(null)} 
+                className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-cyan-500/20 rounded-xl border border-white/10 hover:border-cyan-500/50 transition-all"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
+              
+              {/* 企業名 */}
+              <h2 className="text-2xl font-black text-white mb-4 pr-12 leading-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">{selectedCompany.name}</h2>
+              
+              {/* タグ */}
+              <div className="flex gap-2">
+                <span className="px-4 py-1.5 text-xs font-bold text-cyan-300 bg-cyan-500/15 border border-cyan-400/40 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.2)]">{selectedCompany.industry.split('・')[0]}</span>
+                <span className="px-4 py-1.5 text-xs font-bold text-cyan-300 bg-cyan-500/15 border border-cyan-400/40 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.2)]">{selectedCompany.prefecture.replace('都', '').replace('府', '').replace('県', '')}</span>
+              </div>
             </div>
 
-            <div className="flex gap-2">
-              <button onClick={() => setDetailTab('info')} className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${detailTab === 'info' ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.5)]' : 'bg-white/5 text-white/50 hover:text-white border border-white/10'}`}>企業情報</button>
-              <button onClick={() => setDetailTab('org')} className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${detailTab === 'org' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.5)]' : 'bg-white/5 text-white/50 hover:text-white border border-white/10'}`}>組織図</button>
-              <button onClick={() => setDetailTab('person')} className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${detailTab === 'person' ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-[0_0_20px_rgba(236,72,153,0.5)]' : 'bg-white/5 text-white/50 hover:text-white border border-white/10'}`}>人物情報</button>
+            {/* ② タブナビゲーション */}
+            <div className="flex border-b border-cyan-500/30 bg-black/30">
+              {[
+                { id: 'info', label: '企業情報' },
+                { id: 'org', label: '組織図' },
+                { id: 'person', label: '人物情報' },
+              ].map(tab => (
+                <button 
+                  key={tab.id}
+                  onClick={() => setDetailTab(tab.id as 'info' | 'org' | 'person')} 
+                  className={`flex-1 py-4 text-sm font-bold transition-all relative ${
+                    detailTab === tab.id 
+                      ? 'text-cyan-400' 
+                      : 'text-white/40 hover:text-white/70'
+                  }`}
+                >
+                  {tab.label}
+                  {detailTab === tab.id && (
+                    <div className="absolute bottom-0 left-2 right-2 h-[3px] bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full shadow-[0_0_15px_rgba(6,182,212,1)]" />
+                  )}
+                </button>
+              ))}
             </div>
-          </div>
 
-          <div className="flex-1 overflow-y-auto p-6">
-            {detailTab === 'info' && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+            {/* ③ コンテンツエリア */}
+            <div className="flex-1 overflow-y-auto p-5">
+              {/* 企業情報タブ */}
+              {detailTab === 'info' && (
+                <div className="p-4 rounded-xl bg-[#08080c] border border-cyan-500/20">
                   {[
                     { label: '業種', value: selectedCompany.industry },
                     { label: 'サービス', value: selectedCompany.service },
@@ -648,67 +678,164 @@ export default function Home() {
                     { label: '従業員数', value: selectedCompany.employees },
                     { label: '設立', value: selectedCompany.founded },
                     { label: '資本金', value: selectedCompany.capital },
+                    { label: '所在地', value: selectedCompany.address },
+                    { label: 'HP', value: selectedCompany.website, isLink: true },
                   ].map((item, idx) => (
-                    <div key={idx} className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-cyan-500/30 transition-colors">
-                      <div className="text-[10px] text-cyan-400/60 font-bold uppercase tracking-wider mb-1">{item.label}</div>
-                      <div className="text-sm text-white/90 font-medium">{item.value}</div>
+                    <div key={idx} className="flex items-start py-3 border-b border-cyan-500/10 last:border-0">
+                      <div className="w-24 flex-shrink-0 text-sm text-cyan-400 font-bold">{item.label}:</div>
+                      <div className="flex-1 text-sm text-white/80">
+                        {item.isLink ? (
+                          <a href={`https://${item.value}`} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 transition-colors">
+                            {item.value}
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                          </a>
+                        ) : item.value}
+                      </div>
                     </div>
                   ))}
                 </div>
-                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                  <div className="text-[10px] text-cyan-400/60 font-bold uppercase tracking-wider mb-1">所在地</div>
-                  <div className="text-sm text-white/90">{selectedCompany.address}</div>
-                </div>
-                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                  <div className="text-[10px] text-cyan-400/60 font-bold uppercase tracking-wider mb-1">Website</div>
-                  <a href={`https://${selectedCompany.website}`} className="text-sm text-cyan-400 hover:underline">{selectedCompany.website}</a>
-                </div>
-              </div>
-            )}
+              )}
 
-            {detailTab === 'org' && (
-              <div className="space-y-4">
-                <input type="text" placeholder="🔍 部署名などを入力..." className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-purple-500/50 focus:shadow-[0_0_20px_rgba(168,85,247,0.2)]" />
-                {selectedCompany.departments.map((dept, idx) => (
-                  <div key={idx} className="bg-white/5 rounded-xl p-5 border border-white/10 hover:border-purple-500/30 transition-all group">
-                    <div className="font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">{dept.name}</div>
-                    <div className="flex items-center gap-3 text-sm mb-2">
-                      <span className="text-purple-400">📞</span>
-                      <span className="font-mono text-cyan-400 text-lg">{dept.phone}</span>
-                    </div>
-                    <div className="text-xs text-white/40">{dept.address}</div>
+              {/* 組織図タブ - サイバーパンク */}
+              {detailTab === 'org' && (
+                <div className="space-y-5">
+                  {/* 検索ボックス */}
+                  <div className="relative group">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-xl opacity-0 group-focus-within:opacity-30 blur transition-all" />
+                    <input 
+                      type="text" 
+                      placeholder="部署名で検索..." 
+                      className="relative w-full bg-[#05050a] border-2 border-cyan-500/40 rounded-xl px-5 py-4 pl-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_25px_rgba(6,182,212,0.3)] transition-all"
+                    />
+                    <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                   </div>
-                ))}
-              </div>
-            )}
+                  
+                  {/* 部署カード */}
+                  {selectedCompany.departments.map((dept, idx) => (
+                    <div 
+                      key={idx} 
+                      className="relative group bg-[#05050a] rounded-2xl p-6 border-2 border-cyan-500/30 hover:border-cyan-400/70 transition-all duration-300 overflow-hidden"
+                      style={{ animationDelay: `${idx * 100}ms` }}
+                    >
+                      {/* 背景グロー */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      
+                      {/* 左側のネオンバー */}
+                      <div className="absolute left-0 top-4 bottom-4 w-1 bg-gradient-to-b from-cyan-400 via-purple-500 to-cyan-400 rounded-full opacity-0 group-hover:opacity-100 shadow-[0_0_15px_rgba(6,182,212,0.8)] transition-all" />
+                      
+                      {/* 部署名 */}
+                      <div className="relative flex items-center gap-4 mb-5">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center border-2 border-cyan-500/40 group-hover:border-cyan-400 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
+                          <span className="text-2xl">🏢</span>
+                        </div>
+                        <div>
+                          <span className="text-lg font-black text-white group-hover:text-cyan-400 transition-colors block">{dept.name}</span>
+                          <span className="text-[10px] text-cyan-500/50 font-mono tracking-wider">DEPARTMENT</span>
+                        </div>
+                      </div>
+                      
+                      {/* 電話番号 */}
+                      <div className="relative flex items-center gap-4 mb-4 p-4 rounded-xl bg-[#08080f] border border-cyan-500/20 group-hover:border-cyan-500/40 transition-all">
+                        <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-500/40">
+                          <span className="text-emerald-400 text-lg">📞</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-emerald-400/60 font-mono block mb-1">TEL</span>
+                          <span className="font-mono text-xl font-bold text-white tracking-wider">{dept.phone}</span>
+                        </div>
+                        <button className="ml-auto px-4 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/40 hover:bg-emerald-500/30 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all">
+                          COPY
+                        </button>
+                      </div>
+                      
+                      {/* 所在地 */}
+                      <div className="relative flex items-center gap-4 p-3 rounded-lg bg-[#08080f]/50">
+                        <span className="text-rose-400 text-lg">📍</span>
+                        <span className="text-sm text-white/60">{dept.address}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
 
-            {detailTab === 'person' && (
-              <div className="space-y-4">
-                <input type="text" placeholder="🔍 氏名や役職などを入力..." className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-pink-500/50 focus:shadow-[0_0_20px_rgba(236,72,153,0.2)]" />
-                {selectedCompany.keyPersons.map((person, idx) => (
-                  <div key={idx} className="bg-white/5 rounded-xl p-5 border border-white/10 hover:border-pink-500/30 transition-all group">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="text-lg font-bold text-white group-hover:text-pink-400 transition-colors">{person.name}</span>
-                      <span className="w-5 h-5 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(6,182,212,0.5)]">
-                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                      </span>
-                    </div>
-                    <div className="text-sm text-white/50 mb-3">{person.department}　{person.role}</div>
-                    <div className="flex items-center gap-3 mb-3">
-                      {person.linkedin && <span className="px-3 py-1.5 bg-[#0077b5]/20 rounded-lg text-[#0077b5] text-xs font-bold border border-[#0077b5]/30">LinkedIn</span>}
-                      {person.twitter && <span className="px-3 py-1.5 bg-white/10 rounded-lg text-white/60 text-xs font-bold border border-white/20">𝕏</span>}
-                    </div>
-                    <div className="text-[10px] text-white/30">🔄 {person.updatedAt}に登録</div>
+              {/* 人物情報タブ - サイバーパンク */}
+              {detailTab === 'person' && (
+                <div className="space-y-5">
+                  {/* 検索ボックス */}
+                  <div className="relative group">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl opacity-0 group-focus-within:opacity-30 blur transition-all" />
+                    <input 
+                      type="text" 
+                      placeholder="氏名や役職で検索..." 
+                      className="relative w-full bg-[#05050a] border-2 border-purple-500/40 rounded-xl px-5 py-4 pl-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-purple-400 focus:shadow-[0_0_25px_rgba(168,85,247,0.3)] transition-all"
+                    />
+                    <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                  
+                  {/* 人物カード */}
+                  {selectedCompany.keyPersons.map((person, idx) => (
+                    <div 
+                      key={idx} 
+                      className="relative group bg-[#05050a] rounded-2xl p-6 border-2 border-purple-500/30 hover:border-purple-400/70 transition-all duration-300 overflow-hidden"
+                    >
+                      {/* 背景グロー */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      
+                      {/* 左側のネオンバー */}
+                      <div className="absolute left-0 top-4 bottom-4 w-1 bg-gradient-to-b from-purple-400 via-pink-500 to-purple-400 rounded-full opacity-0 group-hover:opacity-100 shadow-[0_0_15px_rgba(168,85,247,0.8)] transition-all" />
+                      
+                      {/* ヘッダー：名前と認証バッジ */}
+                      <div className="relative flex items-center gap-4 mb-4">
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex items-center justify-center border-2 border-purple-500/40 group-hover:border-purple-400 group-hover:shadow-[0_0_25px_rgba(168,85,247,0.4)] transition-all">
+                          <span className="text-3xl">👤</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
+                            <span className="text-xl font-black text-white group-hover:text-purple-300 transition-colors">{person.name}</span>
+                            <span className="w-6 h-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.6)] animate-pulse">
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-purple-400/60 font-mono tracking-wider">KEY PERSON</span>
+                        </div>
+                      </div>
+                      
+                      {/* 部署・役職 */}
+                      <div className="relative mb-4 p-4 rounded-xl bg-[#08080f] border border-purple-500/20">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center border border-purple-500/40">
+                            <span className="text-purple-400 text-lg">💼</span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-purple-400/60 font-mono block mb-1">POSITION</span>
+                            <span className="text-base font-bold text-white">{person.department}　<span className="text-purple-300">{person.role}</span></span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* SNS & 更新日 */}
+                      <div className="relative flex items-center gap-3">
+                        {person.linkedin && (
+                          <button className="w-12 h-12 bg-[#0077b5]/20 rounded-xl flex items-center justify-center text-[#0077b5] font-bold border-2 border-[#0077b5]/40 hover:bg-[#0077b5]/30 hover:border-[#0077b5] hover:shadow-[0_0_20px_rgba(0,119,181,0.4)] transition-all">
+                            <span className="text-lg">in</span>
+                          </button>
+                        )}
+                        {person.twitter && (
+                          <button className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white/70 font-bold border-2 border-white/20 hover:bg-white/20 hover:border-white/40 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all">
+                            <span className="text-lg">𝕏</span>
+                          </button>
+                        )}
+                        <div className="ml-auto flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/10 border border-purple-500/30">
+                          <span className="text-purple-400">🔄</span>
+                          <span className="text-xs text-purple-300 font-mono">{person.updatedAt}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-          <div className="p-6 border-t border-white/10">
-            <button className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(168,85,247,0.8)] transition-all hover:-translate-y-0.5">
-              🚀 アプローチを開始
-            </button>
           </div>
         </div>
       )}
