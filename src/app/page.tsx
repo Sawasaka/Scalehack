@@ -63,6 +63,46 @@ for (let i = 11; i <= 50; i++) {
   });
 }
 
+// フィルターオプションデータ
+const filterOptions: Record<string, { type: 'select' | 'checkbox' | 'range'; options?: string[]; range?: { min: number; max: number; unit: string } }> = {
+  location: {
+    type: 'select',
+    options: ['北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県', '茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県', '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県', '岐阜県', '静岡県', '愛知県', '三重県', '滋賀県', '京都府', '大阪府', '兵庫県', '奈良県', '和歌山県', '鳥取県', '島根県', '岡山県', '広島県', '山口県', '徳島県', '香川県', '愛媛県', '高知県', '福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'],
+  },
+  employees: {
+    type: 'range',
+    range: { min: 1, max: 10000, unit: '人' },
+  },
+  industry: {
+    type: 'checkbox',
+    options: ['IT・通信', '製造業', '金融', '不動産', '小売・卸売', '建設', '医療・福祉', 'サービス業', '教育', '物流・運輸', 'エネルギー', '広告・メディア'],
+  },
+  service: {
+    type: 'checkbox',
+    options: ['SaaS', 'HRテック', 'フィンテック', 'マーケティング', 'セールステック', '広告・メディア', 'EC', 'コンサルティング', 'システム開発', 'AI・機械学習'],
+  },
+  revenue: {
+    type: 'select',
+    options: ['1億円未満', '1-10億円', '10-50億円', '50-100億円', '100-500億円', '500-1000億円', '1000-5000億円', '5000億円以上', '1兆円以上'],
+  },
+  usedService: {
+    type: 'checkbox',
+    options: ['Salesforce', 'HubSpot', 'Marketo', 'Sansan', 'freee', 'マネーフォワード', 'SmartHR', 'Slack', 'Zoom', 'Google Workspace', 'Microsoft 365', 'AWS', 'Notion'],
+  },
+  department: {
+    type: 'checkbox',
+    options: ['営業', '人事', '経理', '総務', 'マーケティング', '経営企画', '情報システム', '開発', 'カスタマーサクセス', '広報', '法務', '購買'],
+  },
+  deptPhone: {
+    type: 'checkbox',
+    options: ['営業', '人事', '経理', '総務', 'マーケティング', '経営企画', '情報システム', '開発'],
+  },
+  signal: {
+    type: 'checkbox',
+    options: ['High', 'Mid', 'Low'],
+  },
+};
+
 const initialFilterItems = [
   { id: 'location', label: '所在地' },
   { id: 'employees', label: '従業員数' },
@@ -81,9 +121,12 @@ export default function Home() {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [detailTab, setDetailTab] = useState<'info' | 'org' | 'person'>('info');
   const [selectedFilters, setSelectedFilters] = useState<string[]>(['industry', 'revenue', 'service']);
+  const [expandedFilter, setExpandedFilter] = useState<string | null>(null);
+  const [filterSelections, setFilterSelections] = useState<Record<string, string[]>>({});
+  const [employeeRange, setEmployeeRange] = useState({ min: 100, max: 1000 });
   
   // シグナルくん
-  const [characterPos, setCharacterPos] = useState({ x: 100, y: 100 });
+  const [characterPos, setCharacterPos] = useState({ x: 100, y: 480 });
   const [isDragging, setIsDragging] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
@@ -120,7 +163,21 @@ export default function Home() {
   }, [isDragging]);
 
   const toggleFilter = (id: string) => {
-    setSelectedFilters(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
+    setExpandedFilter(prev => prev === id ? null : id);
+  };
+
+  const toggleFilterOption = (filterId: string, option: string) => {
+    setFilterSelections(prev => {
+      const current = prev[filterId] || [];
+      const updated = current.includes(option) 
+        ? current.filter(o => o !== option)
+        : [...current, option];
+      return { ...prev, [filterId]: updated };
+    });
+  };
+
+  const hasActiveFilter = (filterId: string) => {
+    return (filterSelections[filterId]?.length || 0) > 0;
   };
 
   const sendMessage = () => {
@@ -221,8 +278,11 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-purple-500 to-cyan-400" />
         <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-cyan-400 to-purple-500" />
         
+        {/* 内側コンテナ - 装飾ラインからの余白確保 */}
+        <div className="flex flex-col flex-1 overflow-hidden ml-2 mr-2 mt-2 mb-2">
+        
         {/* ① LOGO SECTION */}
-        <div className="px-5 pt-5 pb-4">
+        <div className="px-4 pt-4 pb-4">
           <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">① LOGO SECTION</p>
           <h1 className="text-[1.8rem] font-black italic tracking-tight leading-none mb-3">
             <span className="bg-gradient-to-r from-cyan-200 via-cyan-400 to-cyan-200 bg-clip-text text-transparent">Scale Signal</span>
@@ -237,49 +297,198 @@ export default function Home() {
         </div>
 
         {/* ② SECTION TITLE */}
-        <div className="px-5 pt-3 pb-3">
+        <div className="px-4 pt-2 pb-3">
           <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-2">② SECTION TITLE</p>
           <h2 className="text-lg font-bold text-white">絞り込み</h2>
           <div className="h-px bg-gradient-to-r from-cyan-500/40 to-transparent mt-2" />
         </div>
 
         {/* ③ FILTER LIST */}
-        <div className="px-5 pb-2">
-          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">③ FILTER LIST</p>
-        </div>
-        <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-2">
+        <div className="flex-1 overflow-y-auto px-3 pb-3">
           {initialFilterItems.map((item) => {
-            const isSelected = selectedFilters.includes(item.id);
+            const isExpanded = expandedFilter === item.id;
+            const hasFilter = hasActiveFilter(item.id);
+            const option = filterOptions[item.id];
+            const selections = filterSelections[item.id] || [];
+            
             return (
-              <div 
-                key={item.id} 
-                onClick={() => toggleFilter(item.id)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all border ${
-                  isSelected 
-                    ? 'bg-cyan-500/10 border-cyan-400/60' 
-                    : 'bg-[#0a0a12] border-cyan-500/20 hover:border-cyan-500/40'
-                }`}
-              >
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                  isSelected 
-                    ? 'border-cyan-400 bg-cyan-400' 
-                    : 'border-white/30'
-                }`}>
-                  {isSelected && (
-                    <svg className="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  )}
+              <div key={item.id} className="mb-2">
+                {/* フィルター項目ヘッダー */}
+                <div 
+                  onClick={() => toggleFilter(item.id)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all border ${
+                    isExpanded
+                      ? 'bg-cyan-500/15 border-cyan-400/60' 
+                      : hasFilter
+                        ? 'bg-cyan-500/10 border-cyan-400/40'
+                        : 'bg-[#0a0a12] border-cyan-500/20 hover:border-cyan-500/40'
+                  }`}
+                >
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                    hasFilter 
+                      ? 'border-cyan-400 bg-cyan-400' 
+                      : 'border-white/30'
+                  }`}>
+                    {hasFilter && (
+                      <svg className="w-2.5 h-2.5 text-black" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className={`flex-1 text-sm ${hasFilter || isExpanded ? 'text-white font-medium' : 'text-white/60'}`}>{item.label}</span>
+                  <svg className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180 text-cyan-400' : 'text-white/25'}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                 </div>
-                <span className={`flex-1 text-sm ${isSelected ? 'text-white font-medium' : 'text-white/60'}`}>{item.label}</span>
-                <svg className={`w-4 h-4 ${isSelected ? 'text-cyan-400' : 'text-white/25'}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                
+                {/* 展開されたオプション - ゴリゴリサイバーパンク */}
+                {isExpanded && option && (
+                  <div className="relative mt-2 p-4 rounded-xl bg-[#05050a] border-2 border-cyan-400/60 shadow-[0_0_30px_rgba(6,182,212,0.3),inset_0_0_20px_rgba(6,182,212,0.05)]">
+                    {/* コーナーアクセント */}
+                    <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-cyan-400 rounded-tl-lg" />
+                    <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-purple-500 rounded-tr-lg" />
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-purple-500 rounded-bl-lg" />
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-cyan-400 rounded-br-lg" />
+                    
+                    {/* セレクト型（都道府県、売上） */}
+                    {option.type === 'select' && (
+                      <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
+                        {option.options?.map((opt, idx) => (
+                          <div
+                            key={opt}
+                            onClick={(e) => { e.stopPropagation(); toggleFilterOption(item.id, opt); }}
+                            className={`group relative flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-300 overflow-hidden ${
+                              selections.includes(opt)
+                                ? 'bg-gradient-to-r from-cyan-500/30 to-purple-500/20 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
+                                : 'hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-transparent'
+                            }`}
+                            style={{ animationDelay: `${idx * 30}ms` }}
+                          >
+                            {/* 左側のネオンバー */}
+                            <div className={`absolute left-0 top-0 w-1 h-full transition-all duration-300 ${
+                              selections.includes(opt) 
+                                ? 'bg-gradient-to-b from-cyan-400 to-purple-500 shadow-[0_0_10px_rgba(6,182,212,0.8)]' 
+                                : 'bg-transparent group-hover:bg-cyan-500/50'
+                            }`} />
+                            <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-300 ${
+                              selections.includes(opt) 
+                                ? 'bg-cyan-400 border-cyan-300 shadow-[0_0_15px_rgba(6,182,212,1),0_0_30px_rgba(6,182,212,0.5)]' 
+                                : 'border-cyan-500/50 group-hover:border-cyan-400 group-hover:shadow-[0_0_10px_rgba(6,182,212,0.3)]'
+                            }`}>
+                              {selections.includes(opt) && (
+                                <svg className="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                              )}
+                            </div>
+                            <span className={`text-sm font-medium transition-all duration-300 ${
+                              selections.includes(opt) 
+                                ? 'text-cyan-300 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]' 
+                                : 'text-white/70 group-hover:text-cyan-400'
+                            }`}>{opt}</span>
+                            {selections.includes(opt) && (
+                              <span className="ml-auto text-[10px] text-cyan-400 font-mono animate-pulse">▶ ACTIVE</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* チェックボックス型（業種、サービスなど） */}
+                    {option.type === 'checkbox' && (
+                      <div className="grid grid-cols-2 gap-2">
+                        {option.options?.map((opt, idx) => (
+                          <div
+                            key={opt}
+                            onClick={(e) => { e.stopPropagation(); toggleFilterOption(item.id, opt); }}
+                            className={`group relative flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-300 overflow-hidden ${
+                              selections.includes(opt)
+                                ? 'bg-gradient-to-r from-cyan-500/30 to-purple-500/20 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                                : 'hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-transparent'
+                            }`}
+                            style={{ animationDelay: `${idx * 30}ms` }}
+                          >
+                            {/* 左側のネオンバー */}
+                            <div className={`absolute left-0 top-0 w-0.5 h-full transition-all duration-300 ${
+                              selections.includes(opt) 
+                                ? 'bg-gradient-to-b from-cyan-400 to-purple-500 shadow-[0_0_8px_rgba(6,182,212,0.8)]' 
+                                : 'bg-transparent group-hover:bg-cyan-500/50'
+                            }`} />
+                            <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                              selections.includes(opt) 
+                                ? 'bg-cyan-400 border-cyan-300 shadow-[0_0_15px_rgba(6,182,212,1),0_0_30px_rgba(6,182,212,0.5)]' 
+                                : 'border-cyan-500/50 group-hover:border-cyan-400 group-hover:shadow-[0_0_10px_rgba(6,182,212,0.3)]'
+                            }`}>
+                              {selections.includes(opt) && (
+                                <svg className="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                              )}
+                            </div>
+                            <span className={`text-xs font-medium truncate transition-all duration-300 ${
+                              selections.includes(opt) 
+                                ? 'text-cyan-300 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]' 
+                                : 'text-white/70 group-hover:text-cyan-400'
+                            }`}>{opt}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* レンジ型（従業員数） - ゴリゴリサイバーパンク */}
+                    {option.type === 'range' && (
+                      <div className="space-y-5">
+                        <div className="relative text-center p-4 rounded-xl bg-gradient-to-r from-cyan-500/20 via-purple-500/10 to-cyan-500/20 border border-cyan-400/40 shadow-[inset_0_0_20px_rgba(6,182,212,0.1)]">
+                          <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(6,182,212,0.1),transparent)] animate-pulse" />
+                          <div className="relative flex items-center justify-center gap-3">
+                            <span className="text-3xl font-black bg-gradient-to-r from-cyan-300 via-cyan-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(6,182,212,0.8)]">{employeeRange.min.toLocaleString()}</span>
+                            <span className="text-2xl text-purple-400 animate-pulse">⟷</span>
+                            <span className="text-3xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(168,85,247,0.8)]">{employeeRange.max.toLocaleString()}</span>
+                          </div>
+                          <span className="text-xs text-cyan-400/80 font-mono tracking-wider mt-1 block">[ EMPLOYEE RANGE ]</span>
+                        </div>
+                        <div className="relative h-4 bg-[#0a0a14] rounded-full border-2 border-cyan-500/50 overflow-hidden shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
+                          <div 
+                            className="absolute h-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-purple-500 shadow-[0_0_20px_rgba(6,182,212,0.8)]"
+                            style={{ 
+                              left: `${(employeeRange.min / (option.range?.max || 10000)) * 100}%`,
+                              right: `${100 - (employeeRange.max / (option.range?.max || 10000)) * 100}%`
+                            }}
+                          >
+                            <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)] animate-pulse" />
+                          </div>
+                          <input
+                            type="range"
+                            min={option.range?.min || 1}
+                            max={option.range?.max || 10000}
+                            value={employeeRange.min}
+                            onChange={(e) => setEmployeeRange(prev => ({ ...prev, min: Math.min(Number(e.target.value), prev.max - 100) }))}
+                            onClick={(e) => e.stopPropagation()}
+                            className="absolute w-full h-full opacity-0 cursor-pointer"
+                          />
+                          <input
+                            type="range"
+                            min={option.range?.min || 1}
+                            max={option.range?.max || 10000}
+                            value={employeeRange.max}
+                            onChange={(e) => setEmployeeRange(prev => ({ ...prev, max: Math.max(Number(e.target.value), prev.min + 100) }))}
+                            onClick={(e) => e.stopPropagation()}
+                            className="absolute w-full h-full opacity-0 cursor-pointer"
+                          />
+                        </div>
+                        <div className="flex justify-between text-[10px] text-cyan-400 font-mono font-bold">
+                          <span className="px-2 py-1 bg-cyan-500/20 rounded border border-cyan-500/30">MIN: {option.range?.min?.toLocaleString()}</span>
+                          <span className="px-2 py-1 bg-purple-500/20 rounded border border-purple-500/30">MAX: {option.range?.max?.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
 
         {/* ④ COUNT DISPLAY */}
-        <div className="px-5 py-5">
+        <div className="px-4 py-4">
           <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">④ COUNT DISPLAY</p>
           <div className="text-center">
             <span className="text-6xl font-black bg-gradient-to-b from-cyan-200 via-cyan-400 to-cyan-500 bg-clip-text text-transparent">1,598</span>
@@ -288,15 +497,23 @@ export default function Home() {
         </div>
 
         {/* ⑤ ACTION BUTTONS */}
-        <div className="px-5 pb-5">
+        <div className="px-4 pb-4">
           <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">⑤ ACTION BUTTONS</p>
           <button className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 to-cyan-500 text-sm font-bold text-black shadow-[0_0_20px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2 mb-2">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             <span>検索する</span>
           </button>
-          <button className="w-full py-3 rounded-2xl border border-cyan-500/30 text-sm text-white/50 hover:text-cyan-400 hover:border-cyan-400 transition-all">
-            条件をクリア
+          <button 
+            onClick={() => {
+              setFilterSelections({});
+              setEmployeeRange({ min: 100, max: 1000 });
+              setExpandedFilter(null);
+            }}
+            className="w-full py-3 rounded-2xl border border-cyan-500/30 text-sm text-white/50 hover:text-cyan-400 hover:border-cyan-400 transition-all"
+          >
+            リセット
           </button>
+        </div>
         </div>
       </aside>
 
