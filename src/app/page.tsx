@@ -126,9 +126,10 @@ export default function Home() {
   const [employeeRange, setEmployeeRange] = useState({ min: 100, max: 1000 });
   
   // シグナルくん
-  const [characterPos, setCharacterPos] = useState({ x: 100, y: 480 });
+  const [characterPos, setCharacterPos] = useState({ x: 1250, y: 600 });
   const [isDragging, setIsDragging] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isBubbleOpen, setIsBubbleOpen] = useState(true);
   const [chatMessage, setChatMessage] = useState('');
   const [chatHistory, setChatHistory] = useState<{role: 'user' | 'signal', message: string}[]>([
     { role: 'signal', message: 'こんにちは！シグナルくんだよ🚀 何でも相談してね！' }
@@ -1134,31 +1135,54 @@ export default function Home() {
         className={`fixed z-[100] select-none transition-transform ${isDragging ? 'cursor-grabbing scale-110' : ''}`}
         style={{ left: characterPos.x, top: characterPos.y }}
       >
-        {/* チャットウィンドウ - モダン&アーティスティック */}
+        {/* チャットウィンドウ - サイバーパンク */}
         {isChatOpen && (
-          <div className="absolute bottom-28 left-1/2 -translate-x-1/2 w-96 animate-[slideUp_0.4s_ease-out]">
-            {/* グロー効果 */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-3xl blur-lg opacity-40 animate-pulse" />
+          <div className="absolute -top-[420px] -left-72 w-[380px] animate-[slideUp_0.4s_ease-out]">
+            {/* 外側グロー */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-2xl blur-md opacity-50" />
             
-            <div className="relative bg-black/80 backdrop-blur-2xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
-              {/* 装飾ライン */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500" />
+            <div className="relative bg-[#0a0a15]/95 backdrop-blur-xl rounded-2xl overflow-hidden border-2 border-cyan-400/40 shadow-[0_0_40px_rgba(6,182,212,0.3)]">
+              {/* スキャンライン */}
+              <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(6,182,212,0.02)_2px,rgba(6,182,212,0.02)_4px)] pointer-events-none" />
               
-              {/* 閉じるボタン */}
-              <div className="absolute top-3 right-3 z-10">
-                <button onClick={() => setIsChatOpen(false)} className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/50 hover:text-white transition-all hover:rotate-90 duration-300">
-                  ✕
+              {/* 上部ネオンボーダー */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 shadow-[0_0_15px_rgba(6,182,212,0.8)]" />
+              
+              {/* ヘッダー */}
+              <div className="relative flex items-center justify-between px-5 py-4 border-b border-cyan-500/30">
+                <span className="text-white font-bold text-sm tracking-wide">Scale Signal AI Assistant</span>
+                <button 
+                  onClick={() => setIsChatOpen(false)} 
+                  className="w-8 h-8 rounded-lg bg-white/10 hover:bg-pink-500/30 flex items-center justify-center text-white/50 hover:text-pink-400 transition-all border border-white/10 hover:border-pink-500/50"
+                >
+                  <span className="text-sm">✕</span>
                 </button>
               </div>
               
               {/* メッセージエリア */}
-              <div className="h-80 overflow-y-auto px-4 py-6 space-y-5 scrollbar-thin">
+              <div className="h-72 overflow-y-auto px-4 py-4 space-y-4">
+                {/* 上部スペーサー */}
+                <div className="h-6" />
                 {chatHistory.map((chat, idx) => (
-                  <div key={idx} className={`flex ${chat.role === 'user' ? 'justify-end' : 'justify-start'} animate-[fadeIn_0.3s_ease-out]`}>
-                    <div className={`max-w-[75%] px-5 py-3 text-sm leading-relaxed ${
+                  <div key={idx} className={`flex items-start gap-3 ${chat.role === 'user' ? 'flex-row-reverse' : ''} animate-[fadeIn_0.3s_ease-out]`}>
+                    {/* アバター */}
+                    {chat.role === 'signal' ? (
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+                        <div className="flex gap-0.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-slate-600 flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-sm">👤</span>
+                      </div>
+                    )}
+                    {/* メッセージバブル */}
+                    <div className={`max-w-[70%] px-4 py-3 text-sm leading-relaxed rounded-2xl ${
                       chat.role === 'user' 
-                        ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-3xl rounded-br-lg' 
-                        : 'bg-white/90 text-gray-800 rounded-3xl rounded-bl-lg shadow-md'
+                        ? 'bg-slate-700/80 text-white rounded-tr-sm border border-slate-600/50' 
+                        : 'bg-[#1a1a2e] text-white rounded-tl-sm border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.1)]'
                     }`}>
                       {chat.message}
                     </div>
@@ -1167,7 +1191,7 @@ export default function Home() {
               </div>
               
               {/* 入力エリア */}
-              <div className="p-4 border-t border-white/5 bg-white/5">
+              <div className="p-4 border-t border-cyan-500/30 bg-black/30">
                 <div className="flex items-center gap-3">
                   <div className="flex-1 relative">
                     <input
@@ -1176,19 +1200,24 @@ export default function Home() {
                       onChange={(e) => setChatMessage(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                       placeholder="何でも聞いてね..."
-                      className="w-full px-5 h-14 rounded-2xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-cyan-500/30 focus:bg-white/10 transition-all"
+                      className="w-full px-4 h-12 rounded-xl bg-[#0a0a15] border-2 border-cyan-500/30 text-sm text-white placeholder-white/40 focus:outline-none focus:border-cyan-400 transition-all"
                     />
                   </div>
                   <button 
                     onClick={sendMessage} 
-                    className="w-12 h-12 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 flex items-center justify-center text-white shadow-[0_4px_20px_rgba(6,182,212,0.4)] hover:shadow-[0_4px_30px_rgba(6,182,212,0.6)] hover:scale-105 transition-all"
+                    className="w-12 h-12 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center text-white shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] hover:scale-105 transition-all"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                     </svg>
                   </button>
                 </div>
-                <p className="text-[10px] text-white/30 text-center mt-3">Powered by Scale Signal AI ✨</p>
+              </div>
+              
+              {/* フッター */}
+              <div className="px-4 py-2 bg-black/50 border-t border-cyan-500/20 text-center">
+                <span className="text-[10px] text-white/40">Powered by </span>
+                <span className="text-[10px] text-cyan-400 font-bold">Scale Signal</span>
               </div>
             </div>
           </div>
@@ -1234,13 +1263,86 @@ export default function Home() {
           )}
         </div>
 
-        {/* 吹き出し */}
-        {!isChatOpen && (
-          <div className="absolute -top-16 left-1/2 -translate-x-1/2 whitespace-nowrap">
-            <div className="bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 text-xs text-white font-bold shadow-lg">
-              クリックして相談 💬
+        {/* シグナルとは 説明吹き出し - サイバーパンク */}
+        {!isChatOpen && isBubbleOpen && (
+          <div className="absolute -top-56 -left-72 w-80 animate-[fadeIn_0.5s_ease-out]">
+            {/* 外側グロー */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-2xl blur-md opacity-60 animate-pulse" />
+            
+            <div className="relative bg-black/95 backdrop-blur-xl rounded-2xl overflow-hidden border-2 border-cyan-400/60 shadow-[0_0_50px_rgba(6,182,212,0.4),inset_0_0_30px_rgba(6,182,212,0.1)]">
+              {/* スキャンライン効果 */}
+              <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(6,182,212,0.03)_2px,rgba(6,182,212,0.03)_4px)] pointer-events-none" />
+              
+              {/* 上部ネオンボーダー */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 shadow-[0_0_20px_rgba(6,182,212,1)]" />
+              
+              {/* 閉じるボタン */}
+              <button 
+                onClick={(e) => { e.stopPropagation(); setIsBubbleOpen(false); }}
+                className="absolute top-2 right-2 w-6 h-6 rounded-lg bg-white/10 hover:bg-pink-500/30 flex items-center justify-center text-white/50 hover:text-pink-400 transition-all z-10 border border-white/20 hover:border-pink-500/50"
+              >
+                <span className="text-xs">✕</span>
+              </button>
+              
+              {/* コーナーアクセント */}
+              <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
+              <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.8)]" />
+              <div className="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
+              <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
+              
+              <div className="relative p-5">
+                {/* タイトル */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500/30 to-purple-500/30 flex items-center justify-center border border-cyan-400/50 shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+                    <span className="text-lg">⚡</span>
+                  </div>
+                  <div>
+                    <span className="text-cyan-400 font-black text-sm tracking-wider drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]">SCALE SIGNAL</span>
+                    <span className="text-white/60 text-xs ml-1">とは?</span>
+                  </div>
+                </div>
+                
+                {/* 説明文 */}
+                <div className="space-y-3 text-xs leading-relaxed">
+                  <p className="text-white/90">
+                    インテントセールスとは異なり、貴社サービスと
+                    <span className="text-cyan-400 font-bold px-1 py-0.5 bg-cyan-500/20 rounded mx-0.5">業種</span>
+                    <span className="text-cyan-400 font-bold px-1 py-0.5 bg-cyan-500/20 rounded mx-0.5">売上</span>や
+                    <span className="text-cyan-400 font-bold px-1 py-0.5 bg-cyan-500/20 rounded mx-0.5">従業員数</span>
+                    などとの関連性をもとに独自アルゴリズムでスコア算出
+                  </p>
+                  <p className="text-white/70">
+                    <span className="text-purple-400 font-bold px-1 py-0.5 bg-purple-500/20 rounded mx-0.5">部署番号</span>や
+                    <span className="text-purple-400 font-bold px-1 py-0.5 bg-purple-500/20 rounded mx-0.5">人物データ</span>
+                    の有無も加味して、成功確率の高さを表すよ！
+                  </p>
+                </div>
+                
+                {/* クリック誘導 - ネオンスタイル */}
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setIsChatOpen(true); setIsBubbleOpen(false); }}
+                  className="mt-4 pt-3 border-t border-cyan-500/30 flex items-center justify-center gap-2 w-full hover:bg-cyan-500/10 transition-all rounded-b-lg cursor-pointer"
+                >
+                  <div className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+                  <span className="text-[11px] text-cyan-400 font-bold tracking-wider">CLICK TO CHAT</span>
+                  <span className="text-cyan-400">💬</span>
+                </button>
+              </div>
+              
+              {/* 吹き出しの三角 - ネオン */}
+              <div className="absolute -bottom-3 right-12 w-6 h-6 bg-black border-r-2 border-b-2 border-cyan-400/60 transform rotate-45 shadow-[2px_2px_10px_rgba(6,182,212,0.5)]" />
             </div>
           </div>
+        )}
+        
+        {/* 閉じている時の「SCALE SIGNALとは」ボタン */}
+        {!isChatOpen && !isBubbleOpen && (
+          <button
+            onClick={(e) => { e.stopPropagation(); setIsBubbleOpen(true); }}
+            className="absolute -top-12 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/90 border-2 border-cyan-400/50 rounded-full text-cyan-400 text-xs font-bold tracking-wider hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all whitespace-nowrap"
+          >
+            <span className="mr-1">⚡</span>SCALE SIGNALとは?
+          </button>
         )}
       </div>
     </div>
