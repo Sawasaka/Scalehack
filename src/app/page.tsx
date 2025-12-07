@@ -214,82 +214,94 @@ export default function Home() {
       </div>
 
       {/* Left Panel */}
-      <aside className="relative w-80 border-r border-cyan-500/20 flex flex-col flex-shrink-0 bg-gradient-to-b from-[#0a0a12] via-[#080810] to-[#050508]">
-        {/* Animated Side Border */}
-        <div className="absolute inset-y-0 right-0 w-[2px] bg-gradient-to-b from-cyan-500 via-purple-500 to-pink-500 opacity-50" />
+      <aside className="relative w-[280px] flex flex-col flex-shrink-0 m-4 mr-0 rounded-2xl border border-cyan-500/30 bg-[#050508] overflow-hidden">
+        {/* 装飾ライン - 4辺グラデーション */}
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-cyan-400 to-purple-500" />
+        <div className="absolute top-0 right-0 w-[2px] h-full bg-gradient-to-b from-purple-500 to-cyan-400" />
+        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-purple-500 to-cyan-400" />
+        <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-cyan-400 to-purple-500" />
         
-        {/* Service Name - BIG & BOLD */}
-        <div className="relative px-6 py-8 border-b border-white/10 overflow-hidden">
-          {/* Background Glow */}
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-cyan-500/30 rounded-full blur-[60px] animate-pulse" />
-          <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-[50px] animate-pulse" />
-          
-          <div className="relative">
-            <p className="text-xs font-bold text-cyan-400/80 tracking-[0.3em] mb-2 animate-pulse">SCALEHACK</p>
-            <h1 className="text-4xl font-black tracking-tight leading-none">
-              <span className="block text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">Scale</span>
-              <span className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(6,182,212,0.5)] animate-pulse">Signal</span>
-            </h1>
-            <div className="flex items-center gap-2 mt-3">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-xs text-emerald-400 font-mono">LIVE</span>
+        {/* ① LOGO SECTION */}
+        <div className="px-5 pt-5 pb-4">
+          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">① LOGO SECTION</p>
+          <h1 className="text-[1.8rem] font-black italic tracking-tight leading-none mb-3">
+            <span className="bg-gradient-to-r from-cyan-200 via-cyan-400 to-cyan-200 bg-clip-text text-transparent">Scale Signal</span>
+          </h1>
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] text-white/40 tracking-[0.15em]">SCALEHACK</span>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+              <span className="text-[11px] text-emerald-400">稼働中</span>
             </div>
           </div>
         </div>
 
-        {/* Section Title */}
-        <div className="mx-5 my-4 px-4 py-3 rounded-lg bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/20">
-          <h2 className="text-base font-bold text-cyan-400">⚡ 絞り込み</h2>
+        {/* ② SECTION TITLE */}
+        <div className="px-5 pt-3 pb-3">
+          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-2">② SECTION TITLE</p>
+          <h2 className="text-lg font-bold text-white">絞り込み</h2>
+          <div className="h-px bg-gradient-to-r from-cyan-500/40 to-transparent mt-2" />
         </div>
 
-        {/* Filter Items */}
-        <div className="flex-1 overflow-y-auto px-5 py-3">
+        {/* ③ FILTER LIST */}
+        <div className="px-5 pb-2">
+          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">③ FILTER LIST</p>
+        </div>
+        <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-2">
           {initialFilterItems.map((item) => {
             const isSelected = selectedFilters.includes(item.id);
             return (
               <div 
                 key={item.id} 
                 onClick={() => toggleFilter(item.id)}
-                className={`group flex items-center gap-4 px-4 py-4 rounded-xl cursor-pointer transition-all duration-300 border ${isSelected ? 'bg-cyan-500/10 border-cyan-500/30' : 'border-transparent hover:bg-white/5 hover:border-white/10'}`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all border ${
+                  isSelected 
+                    ? 'bg-cyan-500/10 border-cyan-400/60' 
+                    : 'bg-[#0a0a12] border-cyan-500/20 hover:border-cyan-500/40'
+                }`}
               >
-                {/* Circle Indicator */}
-                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${isSelected ? 'border-cyan-400 bg-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.8)]' : 'border-white/30 group-hover:border-white/50'}`}>
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                  isSelected 
+                    ? 'border-cyan-400 bg-cyan-400' 
+                    : 'border-white/30'
+                }`}>
                   {isSelected && (
-                    <svg className="w-2.5 h-2.5 text-black" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                   )}
                 </div>
-                
-                <span className={`flex-1 text-base font-medium transition-all duration-300 ${isSelected ? 'text-white' : 'text-white/60 group-hover:text-white/80'}`}>{item.label}</span>
-                
-                <svg className={`w-5 h-5 transition-all duration-300 ${isSelected ? 'text-cyan-400' : 'text-white/20 group-hover:text-white/40'}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                <span className={`flex-1 text-sm ${isSelected ? 'text-white font-medium' : 'text-white/60'}`}>{item.label}</span>
+                <svg className={`w-4 h-4 ${isSelected ? 'text-cyan-400' : 'text-white/25'}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </div>
             );
           })}
         </div>
 
-        {/* Footer Actions */}
-        <div className="p-6 border-t border-white/10 bg-gradient-to-t from-black/50 to-transparent">
-          <div className="flex items-center justify-between mb-5 px-1">
-            <span className="text-sm text-white/50 font-medium">対象企業</span>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">1,598</span>
-              <span className="text-base text-white/50">件</span>
-            </div>
+        {/* ④ COUNT DISPLAY */}
+        <div className="px-5 py-5">
+          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">④ COUNT DISPLAY</p>
+          <div className="text-center">
+            <span className="text-6xl font-black bg-gradient-to-b from-cyan-200 via-cyan-400 to-cyan-500 bg-clip-text text-transparent">1,598</span>
+            <span className="text-xl text-white/30 ml-1">件</span>
           </div>
-          <button className="w-full h-10 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-sm font-bold text-white shadow-[0_4px_30px_rgba(6,182,212,0.4)] hover:shadow-[0_4px_40px_rgba(6,182,212,0.6)] hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2">
-            <span>🔍</span>
+        </div>
+
+        {/* ⑤ ACTION BUTTONS */}
+        <div className="px-5 pb-5">
+          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">⑤ ACTION BUTTONS</p>
+          <button className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 to-cyan-500 text-sm font-bold text-black shadow-[0_0_20px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2 mb-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             <span>検索する</span>
           </button>
-          <button className="w-full mt-2 h-10 rounded-xl border border-white/20 text-sm font-bold text-white/50 hover:text-white hover:bg-white/5 transition-all">
+          <button className="w-full py-3 rounded-2xl border border-cyan-500/30 text-sm text-white/50 hover:text-cyan-400 hover:border-cyan-400 transition-all">
             条件をクリア
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col overflow-hidden relative transition-all p-4 ${selectedCompany ? 'mr-[800px]' : ''}`}>
+      <div className={`flex-1 flex flex-col overflow-hidden relative transition-all p-3 ${selectedCompany ? 'mr-[800px]' : ''}`}>
         {/* Header Bar - シアン枠線 */}
         <div className="mb-4 px-6 py-4 rounded-xl border-2 border-cyan-500/50 backdrop-blur-xl bg-black/40 flex items-center justify-between gap-6 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
           <div className="flex items-baseline gap-2">
