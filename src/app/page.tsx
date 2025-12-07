@@ -284,12 +284,12 @@ export default function Home() {
         
         {/* ① LOGO SECTION */}
         <div className="px-4 pt-4 pb-4">
-          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">① LOGO SECTION</p>
+          <p className="text-[10px] text-cyan-400/50 tracking-[0.3em] mb-3 font-mono">▸ POWERED BY SCALEHACK</p>
           <h1 className="text-[1.8rem] font-black italic tracking-tight leading-none mb-3">
             <span className="bg-gradient-to-r from-cyan-200 via-cyan-400 to-cyan-200 bg-clip-text text-transparent">Scale Signal</span>
           </h1>
           <div className="flex items-center justify-between">
-            <span className="text-[11px] text-white/40 tracking-[0.15em]">SCALEHACK</span>
+            <span className="text-[11px] text-white/40 tracking-[0.15em]">&nbsp;&nbsp;SCALEHACK</span>
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
               <span className="text-[11px] text-emerald-400">稼働中</span>
@@ -299,7 +299,7 @@ export default function Home() {
 
         {/* ② SECTION TITLE */}
         <div className="px-4 pt-2 pb-3">
-          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-2">② SECTION TITLE</p>
+          <p className="text-[10px] text-cyan-400/50 tracking-[0.3em] mb-2 font-mono">▸ TARGET PARAMETERS</p>
           <h2 className="text-lg font-bold text-white">絞り込み</h2>
           <div className="h-px bg-gradient-to-r from-cyan-500/40 to-transparent mt-2" />
         </div>
@@ -489,8 +489,8 @@ export default function Home() {
         </div>
 
         {/* ④ COUNT DISPLAY */}
-        <div className="px-4 py-4">
-          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">④ COUNT DISPLAY</p>
+        <div className="px-4 pt-2 pb-4">
+          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">COUNT DISPLAY</p>
           <div className="text-center">
             <span className="text-6xl font-black bg-gradient-to-b from-cyan-200 via-cyan-400 to-cyan-500 bg-clip-text text-transparent">1,598</span>
             <span className="text-xl text-white/30 ml-1">件</span>
@@ -499,7 +499,7 @@ export default function Home() {
 
         {/* ⑤ ACTION BUTTONS */}
         <div className="px-4 pb-4">
-          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">⑤ ACTION BUTTONS</p>
+          <p className="text-[10px] text-cyan-400/50 tracking-[0.2em] mb-3">ACTION BUTTONS</p>
           <button className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 to-cyan-500 text-sm font-bold text-black shadow-[0_0_20px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2 mb-2">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             <span>検索する</span>
