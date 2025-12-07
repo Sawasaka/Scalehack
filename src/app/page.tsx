@@ -156,11 +156,11 @@ export default function Home() {
   const getStatusBadge = (status: Status) => {
     switch (status) {
       case 'called':
-        return <span className="px-2.5 py-1 text-[10px] rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.3)]">CALL済</span>;
+        return <span className="px-3 py-1.5 text-xs rounded-lg bg-transparent text-emerald-400 font-bold border-2 border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.3)]">CALL済</span>;
       case 'not_approached':
-        return <span className="px-2.5 py-1 text-[10px] rounded-full bg-slate-500/20 text-slate-400 font-bold border border-slate-500/30">未アプローチ</span>;
+        return <span className="px-3 py-1.5 text-xs rounded-lg bg-transparent text-slate-400 font-bold border-2 border-slate-500">未アプローチ</span>;
       case 'unavailable':
-        return <span className="px-2.5 py-1 text-[10px] rounded-full bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30 shadow-[0_0_10px_rgba(244,63,94,0.3)]">不可</span>;
+        return <span className="px-3 py-1.5 text-xs rounded-lg bg-transparent text-rose-400 font-bold border-2 border-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.3)]">不可</span>;
     }
   };
 
@@ -180,22 +180,22 @@ export default function Home() {
       case 'high':
         return (
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 shadow-[0_0_12px_rgba(244,63,94,0.8)] animate-pulse" />
-            <span className="text-xs font-bold text-rose-400">High</span>
+            <div className="w-4 h-4 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
+            <span className="text-sm font-bold text-rose-400">High</span>
           </div>
         );
       case 'mid':
         return (
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
-            <span className="text-xs font-bold text-cyan-400">Mid</span>
+            <div className="w-4 h-4 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.6)]" />
+            <span className="text-sm font-bold text-amber-400">Mid</span>
           </div>
         );
       case 'low':
         return (
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-slate-600" />
-            <span className="text-xs text-slate-500">Low</span>
+            <div className="w-4 h-4 rounded-full bg-slate-500 border border-slate-400" />
+            <span className="text-sm text-slate-400">Low</span>
           </div>
         );
     }
@@ -289,71 +289,101 @@ export default function Home() {
       </aside>
 
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col overflow-hidden relative transition-all ${selectedCompany ? 'mr-[800px]' : ''}`}>
-        <div className="px-6 py-4 border-b border-white/10 backdrop-blur-xl bg-black/20 flex items-center justify-between gap-6">
+      <div className={`flex-1 flex flex-col overflow-hidden relative transition-all p-4 ${selectedCompany ? 'mr-[800px]' : ''}`}>
+        {/* Header Bar - シアン枠線 */}
+        <div className="mb-4 px-6 py-4 rounded-xl border-2 border-cyan-500/50 backdrop-blur-xl bg-black/40 flex items-center justify-between gap-6 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
           <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-black bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent">1,598</span>
-            <span className="text-sm text-white/40">件</span>
+            <span className="text-5xl font-black bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent">1,598</span>
+            <span className="text-lg text-white/50">件</span>
           </div>
-          <div className="flex-1 max-w-md">
+          <div className="flex-1 max-w-lg">
             <div className="relative flex items-center">
-              <svg className="absolute left-3 w-4 h-4 text-white/40 pointer-events-none" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              <svg className="absolute left-4 w-5 h-5 text-cyan-400/60 pointer-events-none" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
               <input 
                 type="text" 
                 placeholder="企業名で検索..." 
-                className="w-full py-2.5 pr-4 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/40 focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all" 
-                style={{ paddingLeft: '2.5rem' }}
+                className="w-full py-3 pr-4 rounded-xl bg-black/50 border-2 border-cyan-500/30 text-sm text-white placeholder-white/40 focus:outline-none focus:border-cyan-400 transition-all" 
+                style={{ paddingLeft: '3rem' }}
               />
             </div>
           </div>
-          <button className="p-2.5 rounded-xl hover:bg-white/5 border border-white/10 transition-all group">
-            <svg className="w-5 h-5 text-white/30 group-hover:text-cyan-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          <button className="p-3 rounded-xl hover:bg-cyan-500/10 border-2 border-cyan-500/30 transition-all group hover:border-cyan-400">
+            <svg className="w-6 h-6 text-cyan-400/60 group-hover:text-cyan-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
           </button>
         </div>
 
-        <div className="flex-1 overflow-auto">
+        {/* Table - シアン枠線 */}
+        <div className="flex-1 overflow-auto rounded-xl border-2 border-cyan-500/50 shadow-[0_0_30px_rgba(6,182,212,0.1)]">
           <table className="w-full">
-            <thead className="sticky top-0 backdrop-blur-xl bg-[#030308]/90 border-b border-white/10">
+            <thead className="sticky top-0 bg-[#0a0a15] border-b-2 border-cyan-500/30">
               <tr>
-                <th className="px-4 py-4 text-left w-10"><div className="w-5 h-5 rounded-md border-2 border-white/20 flex items-center justify-center cursor-pointer hover:border-cyan-400 transition-colors" onClick={toggleAll}>{selectedIds.length === mockCompanies.length && <div className="w-2.5 h-2.5 rounded-sm bg-gradient-to-r from-cyan-400 to-purple-500" />}</div></th>
-                <th className="px-4 py-4 text-left text-xs text-cyan-400/80 font-bold uppercase tracking-wider">企業名</th>
-                <th className="px-4 py-4 text-left text-xs text-cyan-400/80 font-bold uppercase tracking-wider w-24">Status</th>
-                <th className="px-4 py-4 text-left text-xs text-cyan-400/80 font-bold uppercase tracking-wider w-20">Next</th>
-                <th className="px-4 py-4 text-left text-xs text-cyan-400/80 font-bold uppercase tracking-wider w-28">メモ</th>
-                <th className="px-4 py-4 text-left text-xs text-cyan-400/80 font-bold uppercase tracking-wider w-16">地域</th>
-                <th className="px-4 py-4 text-left text-xs text-cyan-400/80 font-bold uppercase tracking-wider w-20">業種</th>
-                <th className="px-4 py-4 text-left text-xs text-cyan-400/80 font-bold uppercase tracking-wider w-24">売上</th>
-                <th className="px-4 py-4 text-left text-xs text-cyan-400/80 font-bold uppercase tracking-wider w-28">サービス</th>
-                <th className="px-4 py-4 text-center text-xs text-cyan-400/80 font-bold uppercase tracking-wider w-12">部署</th>
-                <th className="px-4 py-4 text-left text-xs text-cyan-400/80 font-bold uppercase tracking-wider w-16">Signal</th>
+                <th className="px-4 py-4 text-left w-10 border-r border-cyan-500/20">
+                  <div className="w-5 h-5 rounded border-2 border-cyan-500/40 flex items-center justify-center cursor-pointer hover:border-cyan-400 transition-colors" onClick={toggleAll}>
+                    {selectedIds.length === mockCompanies.length && <div className="w-2.5 h-2.5 rounded-sm bg-cyan-400" />}
+                  </div>
+                </th>
+                <th className="px-4 py-4 text-left border-r border-cyan-500/20">
+                  <span className="text-sm text-cyan-400 font-bold">企業名</span>
+                </th>
+                <th className="px-4 py-4 text-left w-28 border-r border-cyan-500/20">
+                  <span className="text-sm text-white/70 font-medium">Status</span>
+                  <span className="block text-[10px] text-white/40">(ステータス)</span>
+                </th>
+                <th className="px-4 py-4 text-left w-24 border-r border-cyan-500/20">
+                  <span className="text-sm text-white/70 font-medium">Next</span>
+                  <span className="block text-[10px] text-white/40">(次アクション)</span>
+                </th>
+                <th className="px-4 py-4 text-left w-28 border-r border-cyan-500/20">
+                  <span className="text-sm text-white/70 font-medium">メモ</span>
+                </th>
+                <th className="px-4 py-4 text-left w-16 border-r border-cyan-500/20">
+                  <span className="text-sm text-white/70 font-medium">地域</span>
+                </th>
+                <th className="px-4 py-4 text-left w-20 border-r border-cyan-500/20">
+                  <span className="text-sm text-white/70 font-medium">業種</span>
+                </th>
+                <th className="px-4 py-4 text-left w-24 border-r border-cyan-500/20">
+                  <span className="text-sm text-white/70 font-medium">売上</span>
+                </th>
+                <th className="px-4 py-4 text-left w-28 border-r border-cyan-500/20">
+                  <span className="text-sm text-white/70 font-medium">サービス</span>
+                </th>
+                <th className="px-4 py-4 text-center w-14 border-r border-cyan-500/20">
+                  <span className="text-sm text-white/70 font-medium">部署</span>
+                </th>
+                <th className="px-4 py-4 text-left w-24">
+                  <span className="text-sm text-white/70 font-medium">Signal</span>
+                  <span className="block text-[10px] text-white/40">(シグナル)</span>
+                </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="bg-[#050510]">
               {mockCompanies.map((company, idx) => (
-                <tr key={company.id} className={`border-b border-white/5 transition-all cursor-pointer ${selectedCompany?.id === company.id ? 'bg-cyan-500/10 shadow-[inset_0_0_30px_rgba(6,182,212,0.1)]' : selectedIds.includes(company.id) ? 'bg-purple-500/10' : 'hover:bg-white/[0.03]'}`} style={{ animationDelay: `${idx * 20}ms` }}>
-                  <td className="px-4 py-3" onClick={() => toggleSelect(company.id)}>
-                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${selectedIds.includes(company.id) ? 'border-cyan-400 bg-cyan-400/20 shadow-[0_0_10px_rgba(6,182,212,0.5)]' : 'border-white/20 hover:border-white/40'}`}>
-                      {selectedIds.includes(company.id) && <div className="w-2.5 h-2.5 rounded-sm bg-gradient-to-r from-cyan-400 to-purple-500" />}
+                <tr key={company.id} className={`border-b border-cyan-500/10 transition-all cursor-pointer ${selectedCompany?.id === company.id ? 'bg-cyan-500/15' : selectedIds.includes(company.id) ? 'bg-purple-500/10' : 'hover:bg-cyan-500/5'}`}>
+                  <td className="px-4 py-3.5 border-r border-cyan-500/10" onClick={() => toggleSelect(company.id)}>
+                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${selectedIds.includes(company.id) ? 'border-cyan-400 bg-cyan-400/20' : 'border-cyan-500/30 hover:border-cyan-400'}`}>
+                      {selectedIds.includes(company.id) && <div className="w-2.5 h-2.5 rounded-sm bg-cyan-400" />}
                     </div>
                   </td>
-                  <td className="px-4 py-3" onClick={() => setSelectedCompany(company)}>
+                  <td className="px-4 py-3.5 border-r border-cyan-500/10" onClick={() => setSelectedCompany(company)}>
                     <span className="text-sm font-medium text-white/90 hover:text-cyan-400 transition-colors">{company.name}</span>
                   </td>
-                  <td className="px-4 py-3">{getStatusBadge(company.status)}</td>
-                  <td className="px-4 py-3">{getNextActionBadge(company.nextAction)}</td>
-                  <td className="px-4 py-3">{company.memo ? <span className="text-xs text-white/50 truncate block max-w-[100px]">{company.memo}</span> : <span className="text-xs text-white/20">-</span>}</td>
-                  <td className="px-4 py-3 text-xs text-white/50">{company.prefecture}</td>
-                  <td className="px-4 py-3 text-xs text-white/50">{company.industry}</td>
-                  <td className="px-4 py-3 text-xs text-white/40">{company.revenue}</td>
-                  <td className="px-4 py-3"><span className="text-xs px-2 py-1 rounded-full bg-white/5 text-white/50 border border-white/10">{company.service}</span></td>
-                  <td className="px-4 py-3 text-center">{company.hasDeptPhone ? <span className="text-cyan-400 text-lg">●</span> : <span className="text-white/20 text-lg">○</span>}</td>
-                  <td className="px-4 py-3">{getIntentBadge(company.intent)}</td>
+                  <td className="px-4 py-3.5 border-r border-cyan-500/10">{getStatusBadge(company.status)}</td>
+                  <td className="px-4 py-3.5 border-r border-cyan-500/10">{getNextActionBadge(company.nextAction)}</td>
+                  <td className="px-4 py-3.5 border-r border-cyan-500/10">{company.memo ? <span className="text-xs text-white/60 truncate block max-w-[100px]">{company.memo}</span> : <span className="text-xs text-white/20">-</span>}</td>
+                  <td className="px-4 py-3.5 text-sm text-white/60 border-r border-cyan-500/10">{company.prefecture.replace('都', '')}</td>
+                  <td className="px-4 py-3.5 text-sm text-white/60 border-r border-cyan-500/10">{company.industry.split('・')[0]}</td>
+                  <td className="px-4 py-3.5 text-sm text-white/50 border-r border-cyan-500/10">{company.revenue}</td>
+                  <td className="px-4 py-3.5 border-r border-cyan-500/10"><span className="text-xs px-2 py-1 rounded bg-cyan-500/10 text-cyan-400/80 border border-cyan-500/20">{company.service}</span></td>
+                  <td className="px-4 py-3.5 text-center border-r border-cyan-500/10">{company.hasDeptPhone ? <span className="text-cyan-400 text-xl">●</span> : <span className="text-white/20 text-xl">○</span>}</td>
+                  <td className="px-4 py-3.5">{getIntentBadge(company.intent)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+
 
       {/* Detail Panel */}
       {selectedCompany && (
