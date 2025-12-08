@@ -136,6 +136,29 @@ export default function Home() {
   ]);
   const dragOffset = useRef({ x: 0, y: 0 });
 
+  // ライブ通知フィード
+  const [currentNotification, setCurrentNotification] = useState(0);
+  const liveNotifications = [
+    { type: 'call_start', name: '田中さん', message: 'CALLを開始しました', icon: '📞', color: 'cyan' },
+    { type: 'appointment', name: '佐藤さん', message: 'アポ獲得！', icon: '🎉', color: 'emerald' },
+    { type: 'achievement', name: '山田さん', message: 'CALL数30件達成', icon: '🏆', color: 'amber' },
+    { type: 'call_start', name: '鈴木さん', message: 'CALLを開始しました', icon: '📞', color: 'cyan' },
+    { type: 'appointment', name: '高橋さん', message: 'アポ獲得！', icon: '🎉', color: 'emerald' },
+    { type: 'call_start', name: '伊藤さん', message: 'CALLを開始しました', icon: '📞', color: 'cyan' },
+    { type: 'achievement', name: '渡辺さん', message: 'CALL数50件達成', icon: '🏆', color: 'amber' },
+    { type: 'appointment', name: '中村さん', message: 'アポ獲得！', icon: '🎉', color: 'emerald' },
+    { type: 'call_start', name: '小林さん', message: 'CALLを開始しました', icon: '📞', color: 'cyan' },
+    { type: 'achievement', name: '加藤さん', message: 'CALL数100件達成', icon: '🔥', color: 'rose' },
+  ];
+
+  // 10秒ごとに通知を切り替え
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentNotification(prev => (prev + 1) % liveNotifications.length);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [liveNotifications.length]);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
     dragOffset.current = {
@@ -520,26 +543,82 @@ export default function Home() {
 
       {/* Main Content */}
       <div className={`flex-1 flex flex-col overflow-hidden relative transition-all p-3 ${selectedCompany ? 'mr-[850px]' : ''}`}>
-        {/* Header Bar - シアン枠線 */}
-        <div className="mb-4 px-6 py-4 rounded-xl border-2 border-cyan-500/50 backdrop-blur-xl bg-black/40 flex items-center justify-between gap-6 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
-          <div className="flex items-baseline gap-2">
-            <span className="text-5xl font-black bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent">1,598</span>
-            <span className="text-lg text-white/50">件</span>
-          </div>
-          <div className="flex-1 max-w-lg">
-            <div className="relative flex items-center">
-              <svg className="absolute left-4 w-5 h-5 text-cyan-400/60 pointer-events-none" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-              <input 
-                type="text" 
-                placeholder="企業名で検索..." 
-                className="w-full py-3 pr-4 rounded-xl bg-black/50 border-2 border-cyan-500/30 text-sm text-white placeholder-white/40 focus:outline-none focus:border-cyan-400 transition-all" 
-                style={{ paddingLeft: '3rem' }}
-              />
+        {/* Header Bar - ライブ通知フィード */}
+        <div className="mb-4 px-6 py-4 rounded-xl border-2 border-cyan-500/50 backdrop-blur-xl bg-black/40 shadow-[0_0_20px_rgba(6,182,212,0.1)] overflow-hidden">
+          {/* ライブインジケーター */}
+          <div className="flex items-center gap-4">
+            {/* LIVE バッジ */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-rose-500/20 border border-rose-500/50 rounded-xl">
+              <div className="w-3 h-3 rounded-full bg-rose-500 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
+              <span className="text-rose-400 font-black text-sm tracking-wider">LIVE</span>
+            </div>
+            
+            {/* 通知コンテンツ */}
+            <div className="flex-1 relative h-12 overflow-hidden">
+              {liveNotifications.map((notification, idx) => (
+                <div 
+                  key={idx}
+                  className={`absolute inset-0 flex items-center gap-4 transition-all duration-500 ${
+                    idx === currentNotification 
+                      ? 'opacity-100 translate-y-0' 
+                      : idx < currentNotification || (currentNotification === 0 && idx === liveNotifications.length - 1)
+                        ? 'opacity-0 -translate-y-full'
+                        : 'opacity-0 translate-y-full'
+                  }`}
+                >
+                  {/* アイコン */}
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${
+                    notification.color === 'cyan' ? 'bg-cyan-500/20 border border-cyan-500/50' :
+                    notification.color === 'emerald' ? 'bg-emerald-500/20 border border-emerald-500/50' :
+                    notification.color === 'amber' ? 'bg-amber-500/20 border border-amber-500/50' :
+                    'bg-rose-500/20 border border-rose-500/50'
+                  }`}>
+                    {notification.icon}
+                  </div>
+                  
+                  {/* テキスト */}
+                  <div className="flex items-center gap-3">
+                    <span className={`text-xl font-black ${
+                      notification.color === 'cyan' ? 'text-cyan-400' :
+                      notification.color === 'emerald' ? 'text-emerald-400' :
+                      notification.color === 'amber' ? 'text-amber-400' :
+                      'text-rose-400'
+                    }`}>
+                      {notification.name}
+                    </span>
+                    <span className="text-lg text-white/90 font-medium">
+                      {notification.message}
+                    </span>
+                  </div>
+                  
+                  {/* 時刻 */}
+                  <div className="ml-auto flex items-center gap-2 text-white/40 text-sm">
+                    <span>たった今</span>
+                    <div className={`w-2 h-2 rounded-full animate-ping ${
+                      notification.color === 'cyan' ? 'bg-cyan-400' :
+                      notification.color === 'emerald' ? 'bg-emerald-400' :
+                      notification.color === 'amber' ? 'bg-amber-400' :
+                      'bg-rose-400'
+                    }`} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* ドットインジケーター */}
+            <div className="flex items-center gap-1.5">
+              {liveNotifications.slice(0, 5).map((_, idx) => (
+                <div 
+                  key={idx}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    idx === currentNotification % 5 
+                      ? 'bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]' 
+                      : 'bg-white/20'
+                  }`}
+                />
+              ))}
             </div>
           </div>
-          <button className="p-3 rounded-xl hover:bg-cyan-500/10 border-2 border-cyan-500/30 transition-all group hover:border-cyan-400">
-            <svg className="w-6 h-6 text-cyan-400/60 group-hover:text-cyan-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-          </button>
         </div>
 
         {/* Table - シアン枠線 */}
