@@ -119,7 +119,8 @@ export default function Home() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'search' | 'filter'>('search');
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [detailTab, setDetailTab] = useState<'info' | 'org' | 'person' | 'script'>('info');
+  const [detailTab, setDetailTab] = useState<'info' | 'org' | 'person' | 'script' | 'scalehack'>('info');
+  const [activePerformer, setActivePerformer] = useState<'suzuki' | 'takahashi' | 'ito'>('suzuki');
   const [selectedFilters, setSelectedFilters] = useState<string[]>(['industry', 'revenue', 'service']);
   const [expandedFilter, setExpandedFilter] = useState<string | null>(null);
   const [filterSelections, setFilterSelections] = useState<Record<string, string[]>>({});
@@ -259,7 +260,7 @@ export default function Home() {
   const getIntentBadge = (intent: string) => {
     switch (intent) {
       case 'high':
-        return (
+  return (
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
             <span className="text-sm font-bold text-rose-400">High</span>
@@ -402,7 +403,7 @@ export default function Home() {
                                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                 </svg>
                               )}
-                            </div>
+        </div>
                             <span className={`text-sm font-medium transition-all duration-300 ${
                               selections.includes(opt) 
                                 ? 'text-cyan-300 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]' 
@@ -729,10 +730,11 @@ export default function Home() {
                 { id: 'org', label: '組織図' },
                 { id: 'person', label: '人物情報' },
                 { id: 'script', label: 'SCRIPT' },
+                { id: 'scalehack', label: 'SCALEHACK' },
               ].map(tab => (
                 <button 
                   key={tab.id}
-                  onClick={() => setDetailTab(tab.id as 'info' | 'org' | 'person' | 'script')} 
+                  onClick={() => setDetailTab(tab.id as 'info' | 'org' | 'person' | 'script' | 'scalehack')} 
                   className={`flex-1 py-5 text-sm font-bold transition-all ${
                     detailTab === tab.id 
                       ? 'text-cyan-400' 
@@ -846,7 +848,7 @@ export default function Home() {
                           <div className="flex gap-1.5 mb-0.5">
                             <div className="w-2 h-2 bg-white rounded-full relative">
                               <div className="absolute w-1 h-1 bg-black rounded-full top-0.5 left-0.5" />
-                            </div>
+        </div>
                             <div className="w-2 h-2 bg-white rounded-full relative">
                               <div className="absolute w-1 h-1 bg-black rounded-full top-0.5 left-0.5" />
                             </div>
@@ -1198,6 +1200,256 @@ export default function Home() {
                       <div className="flex items-center gap-1 text-purple-400">
                         <span className="text-[10px] font-mono">Success Rate:</span>
                         <span className="text-xs font-bold">87%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SCALEHACKタブ - トップセールス成功ノウハウ */}
+              {detailTab === 'scalehack' && (
+                <div className="space-y-5">
+                  {/* TOP PERFORMERS - 横並びカード */}
+                  <div className="relative rounded-2xl bg-[#05050a] border-2 border-amber-500/40 overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400" />
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center border border-amber-500/40">
+                          <span className="text-xl">🏆</span>
+                        </div>
+                        <span className="text-xs text-amber-400 font-mono tracking-widest">TOP PERFORMERS</span>
+                      </div>
+                      <div className="flex gap-3">
+                        {[
+                          { id: 'suzuki', name: '鈴木', rate: '42%', color: 'amber' },
+                          { id: 'takahashi', name: '高橋', rate: '38%', color: 'cyan' },
+                          { id: 'ito', name: '伊藤', rate: '35%', color: 'purple' },
+                        ].map((performer) => (
+                          <button
+                            key={performer.id}
+                            onClick={() => setActivePerformer(performer.id as 'suzuki' | 'takahashi' | 'ito')}
+                            className={`flex-1 p-4 rounded-xl border-2 transition-all ${
+                              activePerformer === performer.id
+                                ? performer.color === 'amber' 
+                                  ? 'bg-amber-500/20 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]'
+                                  : performer.color === 'cyan'
+                                    ? 'bg-cyan-500/20 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)]'
+                                    : 'bg-purple-500/20 border-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.3)]'
+                                : 'bg-white/5 border-white/10 hover:border-white/30'
+                            }`}
+                          >
+                            <div className="text-2xl mb-2">👤</div>
+                            <div className={`text-lg font-bold ${
+                              activePerformer === performer.id
+                                ? performer.color === 'amber' ? 'text-amber-400' : performer.color === 'cyan' ? 'text-cyan-400' : 'text-purple-400'
+                                : 'text-white/60'
+                            }`}>{performer.name}</div>
+                            <div className={`text-xs font-mono ${
+                              activePerformer === performer.id ? 'text-white/80' : 'text-white/40'
+                            }`}>成功率 {performer.rate}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 成功トーク概要 */}
+                  <div className="relative rounded-2xl bg-gradient-to-br from-[#0a0a15] to-[#05050a] border-2 border-emerald-500/40 overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-400" />
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/40">
+                          <span className="text-xl">📋</span>
+                        </div>
+                        <span className="text-xs text-emerald-400 font-mono tracking-widest">SUCCESS TALK OVERVIEW</span>
+                      </div>
+                      <p className="text-white/80 text-sm leading-relaxed">
+                        {activePerformer === 'suzuki' && '鈴木さんは「課題の深掘り」を重視したアプローチで高い成功率を誇ります。初回コールで相手の本音を引き出し、2回目以降で具体的な提案に繋げる「2ステップ戦略」が特徴です。'}
+                        {activePerformer === 'takahashi' && '高橋さんは「データドリブン」なアプローチが特徴。企業の業績データやニュースを事前にリサーチし、具体的な数字を交えた提案で信頼を獲得します。'}
+                        {activePerformer === 'ito' && '伊藤さんは「共感力」を武器にしたアプローチ。相手の立場に立った言葉選びで、警戒心を解き、本音を引き出すのが得意です。'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* SUCCESS TALK FLOW */}
+                  <div className="relative rounded-2xl bg-[#05050a] border-2 border-cyan-500/40 overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400" />
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center border border-cyan-500/40">
+                          <span className="text-xl">🔄</span>
+                        </div>
+                        <span className="text-xs text-cyan-400 font-mono tracking-widest">SUCCESS TALK FLOW</span>
+                      </div>
+                      <div className="space-y-3">
+                        {(activePerformer === 'suzuki' ? [
+                          { step: '1', title: 'アイスブレイク', desc: '業界ニュースの話題で距離を縮める' },
+                          { step: '2', title: '現状ヒアリング', desc: '「現在どのような課題をお持ちですか？」' },
+                          { step: '3', title: '深掘り質問', desc: '「それはいつ頃からですか？」で背景を探る' },
+                          { step: '4', title: '共感・承認', desc: '「確かにそれは大変ですね」で信頼構築' },
+                          { step: '5', title: 'ソリューション提示', desc: '課題に対する具体的解決策を提案' },
+                        ] : activePerformer === 'takahashi' ? [
+                          { step: '1', title: 'データ提示', desc: '業界平均との比較データを共有' },
+                          { step: '2', title: '課題の可視化', desc: '「御社は○○の数値が業界平均を下回っています」' },
+                          { step: '3', title: '事例紹介', desc: '同業他社の成功事例を具体的に説明' },
+                          { step: '4', title: 'ROI提示', desc: '導入効果を数字で明示' },
+                          { step: '5', title: '期限設定', desc: '「○月までに始めれば△月に効果が出ます」' },
+                        ] : [
+                          { step: '1', title: '自己開示', desc: '自分の経験談から会話をスタート' },
+                          { step: '2', title: '傾聴', desc: '相手の話を遮らず最後まで聞く' },
+                          { step: '3', title: '言い換え', desc: '「つまり○○ということですね」で理解を示す' },
+                          { step: '4', title: '提案', desc: '「もし○○があれば助かりますか？」' },
+                          { step: '5', title: 'フォロー約束', desc: '次回連絡の約束を必ず取り付ける' },
+                        ]).map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-[#08080f] border border-cyan-500/20 hover:border-cyan-400/40 transition-all">
+                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center border border-cyan-500/40 text-cyan-400 font-bold text-sm">
+                              {item.step}
+                            </div>
+                            <div className="flex-1">
+                              <span className="text-sm font-bold text-white">{item.title}</span>
+                              <span className="text-xs text-white/50 block">{item.desc}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* POWER PHRASES */}
+                  <div className="relative rounded-2xl bg-[#05050a] border-2 border-pink-500/40 overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-pink-400 via-rose-500 to-pink-400" />
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center border border-pink-500/40">
+                          <span className="text-xl">💬</span>
+                        </div>
+                        <span className="text-xs text-pink-400 font-mono tracking-widest">POWER PHRASES</span>
+                      </div>
+                      <div className="space-y-2">
+                        {(activePerformer === 'suzuki' ? [
+                          '「他社様でも同じ課題を抱えていらっしゃいました」',
+                          '「実は○○業界では今トレンドになっています」',
+                          '「お時間5分だけいただけますか？」',
+                        ] : activePerformer === 'takahashi' ? [
+                          '「御社と同規模の企業では平均○○%の改善が見られます」',
+                          '「このデータをご覧いただけますか」',
+                          '「具体的な数字でご説明させてください」',
+                        ] : [
+                          '「私も以前同じ経験をしたことがあります」',
+                          '「おっしゃる通りですね」',
+                          '「お気持ち、よく分かります」',
+                        ]).map((phrase, idx) => (
+                          <div key={idx} className="p-3 rounded-xl bg-pink-500/10 border border-pink-500/20 text-white/80 text-sm">
+                            {phrase}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WINNING QUESTIONS */}
+                  <div className="relative rounded-2xl bg-[#05050a] border-2 border-purple-500/40 overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-purple-400 via-violet-500 to-purple-400" />
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center border border-purple-500/40">
+                          <span className="text-xl">❓</span>
+                        </div>
+                        <span className="text-xs text-purple-400 font-mono tracking-widest">WINNING QUESTIONS</span>
+                      </div>
+                      <ul className="space-y-2 text-white/80 text-sm">
+                        {(activePerformer === 'suzuki' ? [
+                          '現在最も優先度の高い課題は何ですか？',
+                          'その課題が解決されたら、どんな変化がありますか？',
+                          '今までどのような対策を試されましたか？',
+                        ] : activePerformer === 'takahashi' ? [
+                          '現在のKPIと目標値を教えていただけますか？',
+                          'この数値を改善するためにどのくらいの予算をお考えですか？',
+                          '意思決定に必要な情報は何ですか？',
+                        ] : [
+                          'お仕事で一番大変だと感じることは何ですか？',
+                          '理想の状態があるとしたら、どんな感じですか？',
+                          '今日お話しして、率直にどう思われましたか？',
+                        ]).map((q, idx) => (
+                          <li key={idx} className="flex items-start gap-3 p-2 rounded-lg hover:bg-purple-500/10 transition-colors">
+                            <span className="text-purple-400 font-bold">Q{idx + 1}.</span>
+                            <span>{q}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* OBJECTION HANDLING */}
+                  <div className="relative rounded-2xl bg-[#05050a] border-2 border-orange-500/40 overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-400 via-red-500 to-orange-400" />
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center border border-orange-500/40">
+                          <span className="text-xl">🛡️</span>
+                        </div>
+                        <span className="text-xs text-orange-400 font-mono tracking-widest">OBJECTION HANDLING</span>
+                      </div>
+                      <div className="space-y-3">
+                        {(activePerformer === 'suzuki' ? [
+                          { obj: '「今は忙しい」', resp: '→ 「承知しました。では来週の○曜日はいかがでしょう？」' },
+                          { obj: '「予算がない」', resp: '→ 「まずは無料トライアルからいかがですか？」' },
+                          { obj: '「検討します」', resp: '→ 「いつ頃ご検討いただけそうですか？」' },
+                        ] : activePerformer === 'takahashi' ? [
+                          { obj: '「効果が分からない」', resp: '→ 「他社様の事例をお見せしましょうか？」' },
+                          { obj: '「上に確認が必要」', resp: '→ 「上長様にもご説明させていただけますか？」' },
+                          { obj: '「今のままで十分」', resp: '→ 「業界平均と比較したデータをお見せしてもよろしいですか？」' },
+                        ] : [
+                          { obj: '「興味がない」', resp: '→ 「そうですよね。ちなみに今一番困っていることは何ですか？」' },
+                          { obj: '「他社を使っている」', resp: '→ 「素晴らしいですね。ちなみにどんな点が気に入っていますか？」' },
+                          { obj: '「考えておきます」', resp: '→ 「ありがとうございます。何か気になる点はありましたか？」' },
+                        ]).map((item, idx) => (
+                          <div key={idx} className="p-3 rounded-xl bg-[#08080f] border border-orange-500/20">
+                            <div className="text-orange-400 text-sm font-bold mb-1">{item.obj}</div>
+                            <div className="text-white/70 text-sm">{item.resp}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CLOSING TECHNIQUES */}
+                  <div className="relative rounded-2xl bg-gradient-to-br from-[#0a0a15] to-[#05050a] border-2 border-emerald-500/40 overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-emerald-400 via-green-500 to-emerald-400" />
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/40">
+                          <span className="text-xl">🤝</span>
+                        </div>
+                        <span className="text-xs text-emerald-400 font-mono tracking-widest">CLOSING TECHNIQUES</span>
+                      </div>
+                      <div className="space-y-3">
+                        {(activePerformer === 'suzuki' ? [
+                          '「来週の○曜日と△曜日、どちらがご都合よろしいですか？」（二者択一法）',
+                          '「まずは15分だけお時間いただけますか？」（小さな約束）',
+                          '「他の方もこの時期に始められています」（社会的証明）',
+                        ] : activePerformer === 'takahashi' ? [
+                          '「今月中にスタートすれば、○月には効果が見えてきます」（期限設定）',
+                          '「導入企業の90%が継続されています」（実績提示）',
+                          '「まずはスモールスタートしてみませんか？」（リスク軽減）',
+                        ] : [
+                          '「○○様のお役に立てると確信しています」（信頼表明）',
+                          '「一緒に課題を解決していきましょう」（パートナーシップ）',
+                          '「ぜひ○○様と一度お会いしたいです」（人間関係）',
+                        ]).map((technique, idx) => (
+                          <div key={idx} className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-white/80 text-sm">
+                            {technique}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* フッター */}
+                    <div className="px-5 py-3 bg-emerald-500/10 border-t border-emerald-500/20 flex items-center justify-between">
+                      <span className="text-[10px] text-white/30 font-mono">Data from SCALEHACK Sales Database</span>
+                      <div className="flex items-center gap-1 text-emerald-400">
+                        <span className="text-[10px] font-mono">Updated:</span>
+                        <span className="text-xs font-bold">2024/12/11</span>
                       </div>
                     </div>
                   </div>
